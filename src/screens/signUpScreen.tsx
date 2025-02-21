@@ -72,12 +72,22 @@ export default function SignUpScreen({ navigation }: Props) {
         <Text style={globalStyles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text>Already have an account?</Text>
-        <Text style={{ marginTop: 20, color: "#4287F5", textAlign: "center" }}>
-          Click here to login.
-        </Text>
+      <TouchableOpacity style={globalStyles.button} onPress={handleSignUp}>
+        <Text style={globalStyles.buttonText}>Sign Up with google</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity 
+              style={{ flex: 0.1, flexDirection: 'row', alignItems: "center" }} 
+                onPress={() => navigation.navigate("Login")}>
+                  <Text style={{ color: "#000000", textAlign: "center" }}>
+                    Already have an account? 
+                  </Text>
+                  <Text style={{ color: "#fe6807", textAlign: "center", marginHorizontal: 5 }}>
+                    Login
+                  </Text>
+        </TouchableOpacity>
+
+      
     </View>
   );
 }

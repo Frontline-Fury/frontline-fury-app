@@ -60,6 +60,21 @@ export default function LoginScreen({ navigation }: Props) {
       <TouchableOpacity style={globalStyles.button} onPress={handleLogin}>
         <Text style={globalStyles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={globalStyles.button} onPress={handleLogin}>
+        <Text style={globalStyles.buttonText}>Sign Up with google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={{ flex: 0.1, flexDirection: 'row', alignItems: "center" }} 
+          onPress={() => navigation.navigate("SignUp")}>
+            <Text style={{ color: "#000000", textAlign: "center" }}>
+              Don't have an account? 
+            </Text>
+            <Text style={{ color: "#fe6807", textAlign: "center", marginHorizontal: 5 }}>
+              Sign Up for free
+            </Text>
+        </TouchableOpacity>
     </View>
   );
 }

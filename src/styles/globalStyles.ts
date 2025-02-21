@@ -1,37 +1,61 @@
-// src/styles/globalStyles.ts
 import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
+const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: "#ffffff",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    padding: 20,
+    width: "100%",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "600",
+    fontSize: 32,
+    fontWeight: "500",
+    fontFamily: "Poppins",
     textAlign: "center",
-    marginBottom: 30,
+    color: "#030303",
+    letterSpacing: 0.96,
+    marginBottom: 20,
   },
   input: {
-    height: 50,
-    borderColor: "#CCCCCC",
+    width: "85%",
+    height: 41,
     borderWidth: 1,
-    borderRadius: 8,
+    borderColor: "#00000040",
+    borderRadius: 12,
     paddingHorizontal: 15,
-    marginBottom: 20,
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: "Poppins",
+    marginVertical: 10,
   },
   button: {
-    backgroundColor: "#4287F5",
-    paddingVertical: 15,
-    borderRadius: 8,
+    backgroundColor: "#fe6807",
+    width: "85%",
+    height: 41,
+    borderRadius: 12,
+    justifyContent: "center",
     alignItems: "center",
+    marginVertical: 10,
   },
   buttonText: {
-    color: "#FFFFFF",
-    fontSize: 18,
+    color: "#fffefe",
+    fontSize: 16,
+    fontWeight: "500",
+    fontFamily: "Poppins",
+  },
+  loginText: {
+    fontSize: 12,
+    fontWeight: "500",
+    fontFamily: "Poppins",
+    color: "#595959",
+    marginTop: 20,
+  },
+  linkText: {
+    color: "#fe6807",
+    fontSize: 12,
     fontWeight: "500",
   },
 });
+
+export default globalStyles;
