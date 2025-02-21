@@ -73,8 +73,9 @@ export default function SignUpScreen({ navigation }: Props) {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text>Already have an account?</Text>
         <Text style={{ marginTop: 20, color: "#4287F5", textAlign: "center" }}>
-          Already have an account? Click here to login.
+          Click here to login.
         </Text>
       </TouchableOpacity>
     </View>
