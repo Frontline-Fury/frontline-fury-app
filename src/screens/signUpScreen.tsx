@@ -71,6 +71,12 @@ export default function SignUpScreen({ navigation }: Props) {
       <TouchableOpacity style={globalStyles.button} onPress={handleSignUp}>
         <Text style={globalStyles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text style={{ marginTop: 20, color: "#4287F5", textAlign: "center" }}>
+          Already have an account? Click here to login.
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

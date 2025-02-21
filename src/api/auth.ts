@@ -20,3 +20,20 @@ export const signupUser = async (userData: SignupPayload): Promise<any> => {
     throw error;
   }
 };
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export const loginUser = async (userData: LoginPayload): Promise<any> => {
+  try {
+    const response = await axios.post(`${API_URL}/login`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Login error:", error.response?.data || error.message);
+    throw error;
+  }
+};
