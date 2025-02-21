@@ -34,7 +34,7 @@ export default function SignUpScreen({ navigation }: Props) {
         return;
       }
       Alert.alert("Success", "Account created successfully!");
-      navigation.navigate("Home");
+      navigation.navigate("MainApp");
     } catch (error: any) {
       Alert.alert(
         "Sign Up Error",

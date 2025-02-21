@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }: Props) {
         return;
       }
       Alert.alert("Success", "Logged in successfully!");
-      navigation.navigate("Home");
+      navigation.navigate("MainApp");
     } catch (error: any) {
       Alert.alert("Login Error", error.response?.data?.error || error.message);
     }
