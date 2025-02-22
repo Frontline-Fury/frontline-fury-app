@@ -1,87 +1,97 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { createStackNavigator } from "@react-navigation/stack";
+import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
 
-// Define TypeScript types for screen names
-type BottomTabParamList = {
-  Home: undefined;
-  Profile: undefined;
-  Settings: undefined;
-  Community: undefined;
-  Booking: undefined;
-  LeaderBoard: undefined;
+// Import Screens
+import HomeScreen from "../screens/HomeScreen";
+import PlayerProfile from "../screens/PlayerProfile";
+import Community from "../screens/Community";
+import Booking from "../screens/Booking";
+import LeaderBoard from "../screens/LeaderBoard";
+import QRScannerScreen from "../screens/QR_Code_Screen"; // Ensure correct import path
+
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Custom Header Component
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Tabs: undefined;
+  QRScannerScreen: undefined;
 };
 
-
-const HomeScreen = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Home Screen</Text>
-  </View>
-);
-const PlayerProfile = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Profile Screen</Text>
-  </View>
-);
-const Community = () => (
-  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Community Screen</Text>
-  </View>
-);
-const Booking = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Booking Screen</Text>
-    </View>
-);
-const LeaderBoard = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>LeaderBoard Screen</Text>
-    </View>
-);
-
-const Tab = createBottomTabNavigator<BottomTabParamList>();
-
-const BottomTabNavigator: React.FC = () => {
+const CustomHeader = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10, paddingHorizontal: 15 }}>
+      {/* Logo in Center */}
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <Image source={require("../../assets/frontlinefury.png")} style={{ width: 120, height: 40, resizeMode: "contain" }} />
+      </View>
 
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName: string;
-            switch (route.name) {
-              case "Home":
-                iconName = "house";
-                break;
-              case "Profile":
-                iconName = "person";
-                break;
-              case "Community":
-                iconName = "users-between-lines";
-                break;
-              case "Booking":
-                iconName = "gamepad";
-              case "LeaderBoard":
-                iconName = "stairs";
-              default:
-                iconName = "circle";
-            }
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: "#191bdf",
-          tabBarInactiveTintColor: "gray",
-          tabBarStyle: { backgroundColor: "#fff", paddingTop: 6, height:65 },
-        })}
-      >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
-        <Tab.Screen name="Booking" component={Booking} />
-        <Tab.Screen name="Community" component={Community} />
-        <Tab.Screen name="Profile" component={PlayerProfile} />
-      </Tab.Navigator>
-    
+      {/* QR Scanner Button in Top-Right */}
+      <TouchableOpacity onPress={() => navigation.navigate("QRScannerScreen")}>
+        <Icon name="qr-code-scanner" size={28} color="black" />
+      </TouchableOpacity>
+    </View>
   );
 };
 
-export default BottomTabNavigator;
+const BottomTabNavigator: React.FC = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerTitle: () => <CustomHeader />, // Use custom header
+        headerStyle: { backgroundColor: "#fff", height: 80 },
+        tabBarIcon: ({ color, size }) => {
+          let iconName: string;
+          switch (route.name) {
+            case "Home":
+              iconName = "house";
+              break;
+            case "Profile":
+              iconName = "person";
+              break;
+            case "Community":
+              iconName = "groups";
+              break;
+            case "Booking":
+              iconName = "event";
+              break;
+            case "LeaderBoard":
+              iconName = "leaderboard";
+              break;
+            default:
+              iconName = "circle";
+          }
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: "#fe6807",
+        tabBarInactiveTintColor: "gray",
+        tabBarStyle: { backgroundColor: "#fff", paddingTop: 6, height: 65 },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
+      <Tab.Screen name="Booking" component={Booking} />
+      <Tab.Screen name="Community" component={Community} />
+      <Tab.Screen name="Profile" component={PlayerProfile} />
+    </Tab.Navigator>
+  );
+};
+
+// Stack Navigator (Includes QR Scanner Screen)
+const MainNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Tabs" component={BottomTabNavigator} />
+      <Stack.Screen name="QRScannerScreen" component={QRScannerScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export default MainNavigator;
