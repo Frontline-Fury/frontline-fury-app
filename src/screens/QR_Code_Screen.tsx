@@ -1,37 +1,80 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import QRCodeScanner from "react-native-qrcode-scanner";
-import { RNCamera } from "react-native-camera";
-
-import { StackNavigationProp } from '@react-navigation/stack';
-
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Alert, Button } from "react-native";
+import { Camera, CameraType } from "expo-camera";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
   Home: undefined;
   Details: { itemId: number };
-  QRScanner: undefined; // Add this line
-  // other routes...
+  QRScanner: undefined;
 };
 
-type QRScannerScreenNavigationProp = StackNavigationProp<RootStackParamList, 'QRScanner'>;
+type QRScannerScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "QRScanner"
+>;
 
-const QRScannerScreen = ({ navigation }: { navigation: QRScannerScreenNavigationProp }) => {
-  const [scannedData, setScannedData] = useState("");
+const QRScannerScreen = ({
+  navigation,
+}: {
+  navigation: QRScannerScreenNavigationProp;
+}) => {
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [scanned, setScanned] = useState(false);
+  const cameraRef = useRef<Camera | null>(null);
 
-  const handleScan = (event: { data: React.SetStateAction<string>; }) => {
-    setScannedData(event.data);
-    alert(`Scanned: ${event.data}`);
-    navigation.goBack(); // Go back to the previous screen after scanning
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({
+    type,
+    data,
+  }: {
+    type: string;
+    data: string;
+  }) => {
+    setScanned(true);
+    Alert.alert("Scanned!", `Type: ${type}\nData: ${data}`, [
+      { text: "OK", onPress: () => setScanned(false) },
+      { text: "Go Back", onPress: () => navigation.goBack() },
+    ]);
   };
+
+  if (hasPermission === null) {
+    return (
+      <View style={styles.container}>
+        <Text>Requesting camera permission...</Text>
+      </View>
+    );
+  }
+
+  if (hasPermission === false) {
+    return (
+      <View style={styles.container}>
+        <Text>No access to camera</Text>
+        <Button
+          title="Grant Permission"
+          onPress={() => Camera.requestCameraPermissionsAsync()}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <QRCodeScanner
-        onRead={handleScan}
-        flashMode={RNCamera.Constants.FlashMode.auto}
-        topContent={<Text style={styles.text}>Scan a QR Code</Text>}
-        bottomContent={<Text style={styles.text}>Align the QR code inside the frame</Text>}
+      <Camera
+        ref={(ref) => (cameraRef.current = ref)}
+        style={StyleSheet.absoluteFillObject}
+        type={CameraType.back}
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
       />
+      {scanned && (
+        <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />
+      )}
     </View>
   );
 };
@@ -39,14 +82,8 @@ const QRScannerScreen = ({ navigation }: { navigation: QRScannerScreenNavigation
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
   },
 });
 
