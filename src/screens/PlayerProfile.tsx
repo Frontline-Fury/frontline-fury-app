@@ -3,8 +3,8 @@ import { View, Text } from 'react-native';
 
 const PlayerProfile: React.FC = () => {
   return (
-    <View>
-      <Text>Home Screen</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Player Profile Screen</Text>
     </View>
   );
 };

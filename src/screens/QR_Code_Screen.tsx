@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Alert, Button } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { Camera, CameraType, CameraView } from "expo-camera";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
@@ -21,7 +21,7 @@ const QRScannerScreen = ({
 }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-  const cameraRef = useRef<Camera | null>(null);
+  const cameraRef = useRef<typeof Camera | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -66,11 +66,10 @@ const QRScannerScreen = ({
 
   return (
     <View style={styles.container}>
-      <Camera
-        ref={(ref) => (cameraRef.current = ref)}
+      <CameraView
+        ref={(ref: any) => (cameraRef.current = ref)}
         style={StyleSheet.absoluteFillObject}
-        type={CameraType.back}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarcodeScanned ={scanned ? undefined : handleBarCodeScanned}
       />
       {scanned && (
         <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />

@@ -26,20 +26,21 @@ type RootStackParamList = {
 
 const CustomHeader = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10, paddingHorizontal: 15 }}>
-      {/* Logo in Center */}
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Image source={require("../../assets/frontlinefury.png")} style={{ width: 120, height: 40, resizeMode: "contain" }} />
-      </View>
 
-      {/* QR Scanner Button in Top-Right */}
+  return (
+    <View style={{ flexDirection:"row", alignSelf:"stretch", alignItems: "center", justifyContent: "space-between", width:340  }}>
+      <View>
+        <Image source={require("../../assets/frontlinefury.png")} style={{ width: 120, height: 30, resizeMode: "contain" }} />
+      </View>
+      <View  >
       <TouchableOpacity onPress={() => navigation.navigate("QRScannerScreen")}>
         <Icon name="qr-code-scanner" size={28} color="black" />
       </TouchableOpacity>
+      </View> 
     </View>
   );
 };
+
 
 const BottomTabNavigator: React.FC = () => {
   return (
@@ -72,7 +73,7 @@ const BottomTabNavigator: React.FC = () => {
         },
         tabBarActiveTintColor: "#fe6807",
         tabBarInactiveTintColor: "gray",
-        tabBarStyle: { backgroundColor: "#fff", paddingTop: 6, height: 65 },
+        tabBarStyle: { backgroundColor: "#fff", height: 60 },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
