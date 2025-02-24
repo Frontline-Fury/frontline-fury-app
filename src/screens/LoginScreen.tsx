@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { loginUser, LoginPayload } from "../api/auth";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { CommonActions } from "@react-navigation/native";
 import { RootStackParamList } from "../../App";
 import globalStyles from "../styles/globalStyles";
 
@@ -33,7 +34,12 @@ export default function LoginScreen({ navigation }: Props) {
         return;
       }
       Alert.alert("Success", "Logged in successfully!");
-      navigation.navigate("MainApp");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "MainApp" }], // Only MainApp remains in history
+        })
+      );
     } catch (error: any) {
       Alert.alert("Login Error", error.response?.data?.error || error.message);
     }

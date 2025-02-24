@@ -2,10 +2,9 @@ import "react-native-gesture-handler";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import BottomTabNavigator from "./src/navigaitonBar/BottomTabNavigation";
-import HomeScreen from "./src/screens/HomeScreen";
 import SignUpScreen from "./src/screens/signUpScreen";
 import LoginScreen from "./src/screens/LoginScreen";
+import MainNavigator from "./src/navigaitonBar/BottomTabNavigation";
 
 export type RootStackParamList = {
   SignUp: undefined;
@@ -22,9 +21,9 @@ export default function App() {
         initialRouteName="SignUp"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} options={{gestureEnabled: false}} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{gestureEnabled: false}}/>
+        <Stack.Screen name="MainApp" component={MainNavigator} options={{ gestureEnabled: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
