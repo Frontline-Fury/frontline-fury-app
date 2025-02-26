@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, Animated } from "react-native";
+import PlayerStats from "../components/Player_Stats";
 
 const HomeScreen: React.FC = () => {
   const [xp, setXp] = useState(80  ); 
@@ -21,7 +22,8 @@ const HomeScreen: React.FC = () => {
       <View
         style={{
           width: "95%",
-          backgroundColor: "#A2CFFF80",
+          height: 140,
+          backgroundColor: "#FF900036",
           borderRadius: 12,
           padding:10,
           alignItems: "center",
@@ -49,11 +51,13 @@ const HomeScreen: React.FC = () => {
         <Text style={{ fontSize: 16, color: "#555", position: "relative", bottom: 40, left: 123 }}>Ruby I</Text>
         <View
           style={{
-            width: "90%",
+            position: "absolute",
+            bottom: 55,
+            left: 6,
+            width: "40%",
             height: 10,
             backgroundColor: "#ccc",
             borderRadius: 5,
-            marginTop: 8,
             overflow: "hidden",
             borderColor:'#000',
             borderWidth: 1
@@ -71,11 +75,21 @@ const HomeScreen: React.FC = () => {
           />
         </View>
 
-        <Text style={{ fontSize: 14, color: "#333", marginTop: 3 }}>
+        <Text 
+        style={{ position: "absolute",
+            bottom: 40,
+            left: 30,
+            fontSize: 14,
+            color: "#333", 
+            marginTop: 3 }}>
           XP: {xp} / {maxXp}
         </Text>
       </View>
+      <View>
+        <PlayerStats />
+      </View>
     </View>
+    
   );
 };
 
