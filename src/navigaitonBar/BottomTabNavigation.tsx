@@ -7,10 +7,10 @@ import { useNavigation } from "@react-navigation/native";
 
 // Import Screens
 import HomeScreen from "../screens/HomeScreen";
-import PlayerProfile from "../screens/PlayerProfile";
-import Community from "../screens/Community";
-import Booking from "../screens/Booking";
-import LeaderBoard from "../screens/LeaderBoard";
+import PlayerProfile from "../screens/Profile";
+import Community from "../screens/Community_Screen";
+import Booking from "../screens/Booking_Screen";
+import LeaderBoard from "../screens/LeaderBoard_Screen";
 import QRScannerScreen from "../screens/QR_Code_Screen"; // Ensure correct import path
 
 const Tab = createBottomTabNavigator();
