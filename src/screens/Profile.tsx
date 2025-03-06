@@ -31,9 +31,9 @@ const ProfileScreen: React.FC<ProfileScreenProp> = ({ navigation}) => {
         />
         <View style={{ marginLeft: 10 }}>
           <Text style={{ fontSize: 18, fontWeight: "bold" }}>S2AT</Text>
-          <Button 
-          title="View profile" 
-          onPress={() => navigation.navigate('PlayerProfile')} />
+          <TouchableOpacity onPress={() => navigation.navigate('PlayerProfile')}>
+            <Text style={{ fontSize: 14, color: "#777" }}>View Profile</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <FlatList
