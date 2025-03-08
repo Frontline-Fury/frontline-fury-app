@@ -10,6 +10,4 @@ export type RootStackParamList = {
   MainApp: undefined;
   Profile: undefined;
   PlayerProfile: undefined;
-  array: undefined;
-
 };

@@ -1,93 +1,89 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import React from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import Carousel from '../components/Carousel';
 
-const { width } = Dimensions.get('window');
-
-interface EventItem {
-  id: string;
-  uri: string;
-}
-
-const weeklyEvents: EventItem[] = [
-  { id: '1', uri: 'https://source.unsplash.com/400x300/?event' },
-  { id: '2', uri: 'https://source.unsplash.com/400x300/?sports' },
-  { id: '3', uri: 'https://source.unsplash.com/400x300/?gaming' },
-];
 
 const HomeScreen: React.FC = () => {
-  const carouselRef = useRef<Carousel<EventItem>>(null);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-
-  const renderItem = ({ item }: { item: EventItem }) => (
-    <Image source={{ uri: item.uri }} style={styles.carouselImage} />
-  );
-
   return (
+    // Mian Home Screen
     <View>
-      {/* Weekly Event Container */}
-      <View style={styles.baseContainer}>
-        <Text style={styles.headerText}>Weekly Event</Text>
-        <Carousel
-          ref={carouselRef}
-          data={weeklyEvents}
-          renderItem={renderItem}
-          sliderWidth={width * 0.95}
-          itemWidth={width * 0.8}
-          autoplay={true}
-          autoplayInterval={3000}
-          loop={true}
-          onSnapToItem={(index) => setActiveIndex(index)}
-        />
+      <View style={styles.container}>
 
-        {/* Custom Pagination Dots */}
-        <View style={styles.paginationContainer}>
-          {weeklyEvents.map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.paginationDot,
-                { backgroundColor: activeIndex === index ? 'black' : 'gray' },
-              ]}
-            />
-          ))}
+        <View >
+          <Image source={require('../../assets/a1.jpeg')} style={styles.image} />
         </View>
+        <View style={{ justifyContent: 'center', alignContent: 'center', }}>
+          <Text style={styles.text}>S2AT</Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignContent: 'center', }}>
+          <Text style={styles.text}>
+            sochta hun?
+          </Text>
+        </View>
+
       </View>
+
+      {/* Main container of All Child Container */}
+      <View>
+        {/* Container of Weekly Event */}
+        <View  style={styles.baseContainer}>
+          <Text>
+            This Container Hold the Data of Weekly Event
+          </Text>
+          <Carousel />
+        </View>
+        {/* Container of Best Performance Team/Individual Crousal */}
+        <View  style={styles.baseContainer}>
+          <Text>
+            This Container Hold the Data of Best Performance Team/Individual Crousal
+          </Text>
+        </View>
+        {/* Container of Map Rotaion */}
+        <View  style={styles.baseContainer}>
+          <Text>
+            This Container Hold the Data of Map Rotaion
+          </Text>
+        </View>
+        {/* Container of Fast Booking Slot */}
+        <View  style={styles.baseContainer}>
+          <Text>
+            This Container Hold the Data of Fast Booking Slot
+          </Text>
+        </View>
+
+      </View>
+
     </View>
   );
 };
-
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#fe680780',
+  },
+  text: {
+    fontSize: 26,
+    color: 'black',
+    fontFamily: 'poppins',
+    fontWeight: 'bold',
+  },
+  image: {
+    resizeMode: 'contain',
+    width: 100,
+    height: 100,
+  },
   baseContainer: {
-    width: '95%',
+    width: "95%",
     alignSelf: 'center',
     marginTop: 10,
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
     padding: 10,
     backgroundColor: '#fe680780',
     borderRadius: 6,
     borderWidth: 1,
   },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  carouselImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  paginationDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
 });
-
 export default HomeScreen;

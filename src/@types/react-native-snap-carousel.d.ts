@@ -21,7 +21,16 @@ declare module 'react-native-snap-carousel' {
       enableMomentum?: boolean;
       lockScrollWhileSnapping?: boolean;
     }
-  
+    export class Pagination extends Component<{
+      dotsLength: number;
+      activeDotIndex: number;
+      containerStyle?: ViewStyle;
+      dotStyle?: ViewStyle;
+      inactiveDotStyle?: ViewStyle;
+      inactiveDotOpacity?: number;
+      inactiveDotScale?: number;
+    }> {}
+
     export default class Carousel<T> extends Component<CarouselProps<T>> {}
   }
   
