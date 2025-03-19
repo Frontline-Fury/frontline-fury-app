@@ -45,83 +45,85 @@ const PlayerProfileScreen: React.FC<PlayerProfileScreenProps> = ({ navigation })
           <Text style={{ fontSize: 12, color: '#777' }}>Ruby I</Text>
         </View>
       </View>
-      <FlatList
-        style={{ height: 10200 }}
-        data={[{}]} // Dummy data to render the component once
-        keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }} // Increases scrollable height
-        renderItem={() => (
-          <View>
-            {/* Your Stats Container and other contents */}
-            <View style={styles.statsContainer}>
-              <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                placeholder="All"
-                style={styles.dropdown}
-                dropDownContainerStyle={styles.dropdownContainer}
-              />
+      <View style={{ flex: 1 }}>
+        <FlatList
+          style={{ height: 102000 }}
+          data={[{}]} // Dummy data to render the component once
+          keyExtractor={(_, index) => index.toString()}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 500 }} // Increases scrollable height
+          renderItem={() => (
+            <View>
+              {/* Your Stats Container and other contents */}
+              <View style={styles.statsContainer}>
+                <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder="All"
+                  style={styles.dropdown}
+                  dropDownContainerStyle={styles.dropdownContainer}
+                />
 
-              {/* Tabs for Filtering */}
-              <View style={styles.tabsContainer}>
-                {['All', 'Ranked', 'Casual'].map((tab) => (
-                  <TouchableOpacity
-                    key={tab}
-                    style={[
-                      styles.tabButton,
-                      activeTab === tab && styles.activeTab
-                    ]}
-                    onPress={() => setActiveTab(tab)}
-                  >
-                    <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
-                      {tab}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              {/* Common Stats */}
-              <View style={styles.CommonStats}>
-                <View style={styles.cont1}>
-                  <View style={styles.cont1A}>
-                    <Text style={styles.statstext}>Win</Text>
-                  </View>
-                  <View style={styles.cont1B}>
-                    <Text style={styles.statstext}>Top Ten's</Text>
-                  </View>
+                {/* Tabs for Filtering */}
+                <View style={styles.tabsContainer}>
+                  {['All', 'Ranked', 'Casual'].map((tab) => (
+                    <TouchableOpacity
+                      key={tab}
+                      style={[
+                        styles.tabButton,
+                        activeTab === tab && styles.activeTab
+                      ]}
+                      onPress={() => setActiveTab(tab)}
+                    >
+                      <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
+                        {tab}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
+                {/* Common Stats */}
+                <View style={styles.CommonStats}>
+                  <View style={styles.cont1}>
+                    <View style={styles.cont1A}>
+                      <Text style={styles.statstext}>Win</Text>
+                    </View>
+                    <View style={styles.cont1B}>
+                      <Text style={styles.statstext}>Top Ten's</Text>
+                    </View>
+                  </View>
 
-                <View style={styles.cont2}>
-                  <View style={styles.cont2A}>
-                    <Text style={styles.statstext}>Win%</Text>
+                  <View style={styles.cont2}>
+                    <View style={styles.cont2A}>
+                      <Text style={styles.statstext}>Win%</Text>
+                    </View>
+                    <View style={styles.cont2B}>
+                      <Text style={styles.statstext}>Games played</Text>
+                      <Text style={styles.statstext1}>K/D</Text>
+                    </View>
                   </View>
-                  <View style={styles.cont2B}>
-                    <Text style={styles.statstext}>Games played</Text>
-                    <Text style={styles.statstext1}>K/D</Text>
+
+                  <View style={styles.cont3}>
+                    <View style={styles.cont3A}>
+                      <Text style={styles.statstext}>Kil</Text>
+                    </View>
+                    <View style={styles.cont3B}>
+                      <Text style={styles.statstext}>Best Rank</Text>
+                    </View>
                   </View>
+
+
                 </View>
-
-                <View style={styles.cont3}>
-                  <View style={styles.cont3A}>
-                    <Text style={styles.statstext}>Kil</Text>
-                  </View>
-                  <View style={styles.cont3B}>
-                    <Text style={styles.statstext}>Best Rank</Text>
-                  </View>
-                </View>
-
-                <View style={{ width: "100%", height: "50%" }}>
+                <View style={{ flex: 1, width: "100%", height: "50%", borderColor: "#000", borderWidth: 1 }}>
                   <StatContainer />
                 </View>
               </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   dropdownContainer: {
-    width: "95%",
+    width: "100%",
     backgroundColor: '#fff',
     borderColor: 'gray',
     borderWidth: 1,
@@ -184,6 +186,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     width: "100 %",
     marginTop: 16,
+    borderColor:"#000",
+    borderWidth:1,
 
   },
   tabButton: {
@@ -212,6 +216,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: '#00000050',
     alignItems: 'center',
+    borderColor: '#000',
+    borderWidth: 1,
   },
   cont1: {
     flexDirection: 'row',
