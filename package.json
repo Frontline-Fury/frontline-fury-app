@@ -17,6 +17,7 @@
     "expo": "~52.0.37",
     "expo-barcode-scanner": "^13.0.1",
     "expo-camera": "~16.0.17",
+    "expo-linear-gradient": "^14.0.2",
     "expo-status-bar": "~2.0.1",
     "nativewind": "^4.1.23",
     "prop-types": "^15.8.1",

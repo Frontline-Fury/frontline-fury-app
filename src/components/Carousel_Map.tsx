@@ -10,6 +10,7 @@ import {
   NativeSyntheticEvent,
   FlatListProps,
 } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient'; // Requires expo-linear-gradient
 
 // Define Type for Carousel Items with Map Details
 interface CarouselItem {
@@ -76,16 +77,23 @@ const CarouselMap: React.FC = () => {
   // Render Item with Type Safety and New Layout
   const renderItem = ({ item }: { item: CarouselItem }) => (
     <View style={styles.carouselItemContainer}>
-      <View style={styles.mapImageContainer}>
-        <Image 
-          source={item.image} 
-          style={styles.mapImage} 
-        />
-      </View>
-      <View style={styles.mapDetailsContainer}>
-        <Text style={styles.mapName}>{item.name}</Text>
-        <Text style={styles.mapDescription}>{item.description}</Text>
-      </View>
+      <LinearGradient
+        colors={['#85d5c8', '#03ced5']}
+        style={styles.mapItemGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.mapImageContainer}>
+          <Image 
+            source={item.image} 
+            style={styles.mapImage} 
+          />
+        </View>
+        <View style={styles.mapDetailsContainer}>
+          <Text style={styles.mapName}>{item.name}</Text>
+          <Text style={styles.mapDescription}>{item.description}</Text>
+        </View>
+      </LinearGradient>
     </View>
   );
 
@@ -103,14 +111,17 @@ const CarouselMap: React.FC = () => {
         key={index}
         style={[
           styles.dot,
-          { backgroundColor: activeIndex === index ? "white" : "black" },
+          { 
+            backgroundColor: activeIndex === index ? '#03ced5' : '#85d5c8',
+            width: activeIndex === index ? 20 : 10
+          },
         ]}
       />
     ));
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       {/* Carousel FlatList */}
       <FlatList
         data={carouselData}
@@ -135,22 +146,37 @@ export default CarouselMap;
 
 // Styles
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
   carouselItemContainer: {
     width: Dimensions.get("window").width,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
+  mapItemGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f0f0f0',
+    borderRadius: 15,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   mapImageContainer: {
     width: '40%',
-    marginRight: 10,
+    marginRight: 15,
   },
   mapImage: {
     height: 200,
     width: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
+    borderWidth: 3,
+    borderColor: 'white',
   },
   mapDetailsContainer: {
     width: '55%',
@@ -160,22 +186,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: 'white',
   },
   mapDescription: {
     fontSize: 16,
-    color: '#666',
+    color: '#000',
     lineHeight: 24,
   },
   pagination: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 30,
+    marginTop: 15,
+    marginBottom: 10,
   },
   dot: {
     height: 10,
-    width: 10,
     borderRadius: 5,
     marginHorizontal: 3,
+    backgroundColor: '#85d5c8',
   },
 });
