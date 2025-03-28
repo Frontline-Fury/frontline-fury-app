@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { loginUser, LoginPayload } from "../api/auth";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { CommonActions } from "@react-navigation/native";
-import { RootStackParamList } from "../../App";
+import { RootStackParamList } from "../../src/main/types";
 import globalStyles from "../styles/globalStyles";
 
 type LoginScreenNavigationProp = StackNavigationProp<

@@ -10,8 +10,5 @@ export type RootStackParamList = {
   MainApp: undefined;
   Profile: undefined;
   PlayerProfile: undefined;
-<<<<<<< HEAD
   Booking: undefined;
-=======
->>>>>>> e6278a6da4f2fbe65ff52f1edc2f010aa737b3aa
 };
