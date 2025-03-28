@@ -11,7 +11,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import Carousel from '../components/Carousel_Event';
 import CarouselMap from '../components/Carousel_Map';
-
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../main/types";
 // Screen dimensions
 const { width } = Dimensions.get('window');
 
@@ -20,6 +21,9 @@ type SectionItem = {
   type: 'weeklyEvent' | 'performance' | 'mapRotation' | 'bookingSlot';
 };
 
+type HomeScreenProps = { navigation:StackNavigationProp<RootStackParamList, 'Home'>;
+
+ }; 
 type PerformanceData = {
   name: string;
   image: any;
@@ -38,7 +42,7 @@ type BookingSlot = {
   totalSeatsTeam2: number;
 };
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Sections for FlatList
   const sections: SectionItem[] = [
     { type: 'weeklyEvent' },
@@ -66,7 +70,7 @@ const HomeScreen: React.FC = () => {
       gameName: "Team Death Match",
       dateTime: "2024-03-31 16:00",
       remainingSeatsTeam1: 2,
-      remainingSeatsTeam2: 1,
+      remainingSeatsTeam2: 10,
       totalSeatsTeam1: 10,
       totalSeatsTeam2: 10
     },
@@ -157,7 +161,7 @@ const HomeScreen: React.FC = () => {
       <TouchableOpacity 
         key={slot.id} 
         style={styles.bookingSlotCard}
-        onPress={() => {/* Navigation or booking logic */}}
+        onPress={() => navigation.navigate('Booking')}
       >
         <View style={styles.bookingSlotHeader}>
           <Text style={styles.bookingSlotName}>{slot.gameName}</Text>

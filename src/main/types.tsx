@@ -10,5 +10,8 @@ export type RootStackParamList = {
   MainApp: undefined;
   Profile: undefined;
   PlayerProfile: undefined;
-  Booking: undefined;
+  Booking: { 
+    gameId?: number; 
+    gameName?: string 
+  } | undefined;
 };
