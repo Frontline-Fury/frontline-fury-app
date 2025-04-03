@@ -1,8 +1,20 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation, Platform, UIManager, ScrollView, FlatList, Alert } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StyleSheet, 
+  LayoutAnimation, 
+  Platform, 
+  UIManager, 
+  ScrollView, 
+  FlatList, 
+  Alert,
+  TextInput 
+} from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../main/types';
-import { MaterialIcons, Feather } from '@expo/vector-icons';
+import { MaterialIcons, Feather, FontAwesome, AntDesign } from '@expo/vector-icons';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android') {
@@ -55,13 +67,18 @@ const DateItem = memo(({
   );
 });
 
-// Type definition for a time slot
+// Type definition for a time slot with player count information
 interface TimeSlot {
   id: string;
   time: string;
   available: boolean;
   selected: boolean;
   locked: boolean;
+  playerCount: {
+    team1: number;  // Current players in team 1
+    team2: number;  // Current players in team 2
+    maxPerTeam: number; // Max players per team
+  };
 }
 
 // Type for time slot period
@@ -74,30 +91,128 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   // Active time slot
   const [activeTimeSlot, setActiveTimeSlot] = useState<TimeSlotPeriod | null>(null);
   
+  // Selected slot ID
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  
+  // Player count that the user is bringing
+  const [userPlayerCount, setUserPlayerCount] = useState<number>(1);
+  
+  // Team selection (1 or 2)
+  const [selectedTeam, setSelectedTeam] = useState<1 | 2>(1);
+  
   // Date selection states
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [datesList, setDatesList] = useState<Date[]>([]);
 
-  // Time slots with selection state
+  // Player information states
+  const [showPlayerInfoSection, setShowPlayerInfoSection] = useState(false);
+  const [playerIds, setPlayerIds] = useState<string[]>(['']);
+  const [currentUserPlayerId, setCurrentUserPlayerId] = useState('');
+
+  // Time slots with selection state and player count information
   const [timeSlots, setTimeSlots] = useState<Record<TimeSlotPeriod, TimeSlot[]>>({
     morning: [
-      { id: 'morning-1', time: '9:00 AM - 10:00 AM', available: true, selected: false, locked: false },
-      { id: 'morning-2', time: '10:00 AM - 11:00 AM', available: true, selected: false, locked: true },
-      { id: 'morning-3', time: '11:00 AM - 12:00 PM', available: true, selected: false, locked: false },
-      { id: 'morning-4', time: '12:00 PM - 1:00 PM', available: true, selected: false, locked: true },
+      { 
+        id: 'morning-1', 
+        time: '9:00 AM - 10:00 AM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 3, team2: 2, maxPerTeam: 5 }
+      },
+      { 
+        id: 'morning-2', 
+        time: '10:00 AM - 11:00 AM', 
+        available: true, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 5, team2: 4, maxPerTeam: 5 }
+      },
+      { 
+        id: 'morning-3', 
+        time: '11:00 AM - 12:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 2, team2: 3, maxPerTeam: 5 }
+      },
+      { 
+        id: 'morning-4', 
+        time: '12:00 PM - 1:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 5, team2: 5, maxPerTeam: 5 }
+      },
     ],
     afternoon: [
-      { id: 'afternoon-1', time: '1:00 PM - 2:00 PM', available: true, selected: false, locked: false },
-      { id: 'afternoon-2', time: '2:00 PM - 3:00 PM', available: true, selected: false, locked: true },
-      { id: 'afternoon-3', time: '3:00 PM - 4:00 PM', available: true, selected: false, locked: false },
-      { id: 'afternoon-4', time: '4:00 PM - 5:00 PM', available: true, selected: false, locked: true },
+      { 
+        id: 'afternoon-1', 
+        time: '1:00 PM - 2:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 4, team2: 3, maxPerTeam: 5 }
+      },
+      { 
+        id: 'afternoon-2', 
+        time: '2:00 PM - 3:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 1, team2: 1, maxPerTeam: 5 }
+      },
+      { 
+        id: 'afternoon-3', 
+        time: '3:00 PM - 4:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 3, team2: 5, maxPerTeam: 5 }
+      },
+      { 
+        id: 'afternoon-4', 
+        time: '4:00 PM - 5:00 PM', 
+        available: false, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 5, team2: 5, maxPerTeam: 5 }
+      },
     ],
     evening: [
-      { id: 'evening-1', time: '5:00 PM - 6:00 PM', available: true, selected: false, locked: false },
-      { id: 'evening-2', time: '6:00 PM - 7:00 PM', available: true, selected: false, locked: true },
-      { id: 'evening-3', time: '7:00 PM - 8:00 PM', available: true, selected: false, locked: false },
-      { id: 'evening-4', time: '8:00 PM - 9:00 PM', available: true, selected: false, locked: true },
+      { 
+        id: 'evening-1', 
+        time: '5:00 PM - 6:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 2, team2: 2, maxPerTeam: 5 }
+      },
+      { 
+        id: 'evening-2', 
+        time: '6:00 PM - 7:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 4, team2: 4, maxPerTeam: 5 }
+      },
+      { 
+        id: 'evening-3', 
+        time: '7:00 PM - 8:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: false,
+        playerCount: { team1: 0, team2: 1, maxPerTeam: 5 }
+      },
+      { 
+        id: 'evening-4', 
+        time: '8:00 PM - 9:00 PM', 
+        available: true, 
+        selected: false, 
+        locked: true,
+        playerCount: { team1: 5, team2: 3, maxPerTeam: 5 }
+      },
     ]
   });
 
@@ -121,6 +236,51 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
       }
     }
   }, [currentMonth]);
+
+  // Check slot status when slots change
+  useEffect(() => {
+    if (activeTimeSlot) {
+      checkAndUpdateLockedSlots(activeTimeSlot);
+    }
+  }, [timeSlots]);
+
+  // Reset player count when slot selection changes
+  useEffect(() => {
+    if (selectedSlotId) {
+      setUserPlayerCount(1);
+      setShowPlayerInfoSection(false);
+      setPlayerIds(['']);
+    }
+  }, [selectedSlotId]);
+
+  // Function to check if a slot is full
+  const isSlotFull = useCallback((slot: TimeSlot) => {
+    return slot.playerCount.team1 === slot.playerCount.maxPerTeam && 
+           slot.playerCount.team2 === slot.playerCount.maxPerTeam;
+  }, []);
+
+  // Function to calculate remaining spaces in a slot
+  const getRemainingSpaces = useCallback((slot: TimeSlot) => {
+    const team1Remaining = slot.playerCount.maxPerTeam - slot.playerCount.team1;
+    const team2Remaining = slot.playerCount.maxPerTeam - slot.playerCount.team2;
+    return team1Remaining + team2Remaining;
+  }, []);
+
+  // Function to get capacity status text and color
+  const getCapacityStatus = useCallback((slot: TimeSlot) => {
+    const remaining = getRemainingSpaces(slot);
+    const total = slot.playerCount.maxPerTeam * 2;
+    
+    if (remaining === 0) {
+      return { text: 'Full', color: '#E53935' };
+    } else if (remaining <= 2) {
+      return { text: 'Almost Full', color: '#FF9800' };
+    } else if (remaining <= 5) {
+      return { text: 'Filling Up', color: '#4CAF50' };
+    } else {
+      return { text: 'Open', color: '#2196F3' };
+    }
+  }, [getRemainingSpaces]);
 
   // Function to get all dates for a given month
   const getDatesForMonth = (month: Date) => {
@@ -155,7 +315,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
     setCurrentMonth(next);
   }, [currentMonth]);
 
-  // Function to move to the previous month for
+  // Function to move to the previous month
   const prevMonth = useCallback(() => {
     const prev = new Date(currentMonth);
     const today = new Date();
@@ -229,65 +389,247 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   // Toggle time slot selection
   const toggleTimeSlot = useCallback((slot: TimeSlotPeriod) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    
+    // If there's a selected slot ID, clear it
+    if (selectedSlotId) {
+      setSelectedSlotId(null);
+    }
+    
     setActiveTimeSlot(activeTimeSlot === slot ? null : slot);
-  }, [activeTimeSlot]);
+  }, [activeTimeSlot, selectedSlotId]);
 
-  // Handle slot selection
-  const handleSlotSelection = useCallback((slotId: string, period: TimeSlotPeriod) => {
-    setTimeSlots(prev => {
-      const newTimeSlots = { ...prev };
-      const periodSlots = [...newTimeSlots[period]];
-      
-      // Find the selected slot
-      const slotIndex = periodSlots.findIndex(s => s.id === slotId);
-      if (slotIndex === -1 || !periodSlots[slotIndex].available || periodSlots[slotIndex].locked) {
-        return prev;
-      }
-      
-      // Toggle selection for this slot
-      periodSlots[slotIndex] = {
-        ...periodSlots[slotIndex],
-        selected: !periodSlots[slotIndex].selected
-      };
-      
-      // Update the slots for this period
-      newTimeSlots[period] = periodSlots;
-      
-      // Check conditions for unlocking slots 2 and 4
-      const slot1Selected = periodSlots[0].selected;
-      const slot3Selected = periodSlots[2].selected;
-      
-      // Update lock status based on selection
-      if (slot1Selected && slot3Selected) {
-        // Unlock slots 2 and 4
+  // Check if unlocked slots are full and update locked slots accordingly
+  const checkAndUpdateLockedSlots = useCallback((period: TimeSlotPeriod) => {
+    const currentSlots = timeSlots[period];
+    
+    // Check if slots 1 and 3 (index 0 and 2) are full
+    const slot1Full = isSlotFull(currentSlots[0]);
+    const slot3Full = isSlotFull(currentSlots[2]);
+    
+    // If both slots are full, unlock slots 2 and 4
+    if (slot1Full && slot3Full) {
+      setTimeSlots(prev => {
+        const newTimeSlots = { ...prev };
+        const periodSlots = [...newTimeSlots[period]];
+        
+        // Unlock slots 2 and 4 (index 1 and 3)
         if (periodSlots[1].locked) {
           periodSlots[1].locked = false;
         }
         if (periodSlots[3].locked) {
           periodSlots[3].locked = false;
         }
-      } else {
-        // Lock slots 2 and 4
-        if (!periodSlots[1].locked) {
-          periodSlots[1].locked = true;
-          periodSlots[1].selected = false; // Unselect if it was selected
+        
+        newTimeSlots[period] = periodSlots;
+        return newTimeSlots;
+      });
+    }
+  }, [timeSlots, isSlotFull]);
+
+  // Handle locked slot tap
+  const handleLockedSlotTap = useCallback((period: TimeSlotPeriod) => {
+    Alert.alert(
+      "Slot Locked",
+      "This slot will be unlocked when the available slots are full.",
+      [{ text: "OK", onPress: () => {} }]
+    );
+  }, []);
+
+  // Handle slot selection
+  const handleSlotSelection = useCallback((slotId: string, period: TimeSlotPeriod) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    
+    // Toggle selection if clicking the same slot, otherwise select new slot
+    if (selectedSlotId === slotId) {
+      setSelectedSlotId(null);
+    } else {
+      // Find the slot to get current player counts
+      const selectedSlot = timeSlots[period].find(slot => slot.id === slotId);
+      
+      if (selectedSlot) {
+        // Determine which team has more space
+        const team1Remaining = selectedSlot.playerCount.maxPerTeam - selectedSlot.playerCount.team1;
+        const team2Remaining = selectedSlot.playerCount.maxPerTeam - selectedSlot.playerCount.team2;
+        
+        // Auto-select the team with more space
+        setSelectedTeam(team1Remaining >= team2Remaining ? 1 : 2);
+        setSelectedSlotId(slotId);
+      }
+    }
+  }, [selectedSlotId, timeSlots]);
+  
+  // Increment player count
+  const incrementPlayerCount = useCallback(() => {
+    if (!selectedSlotId || !activeTimeSlot) return;
+    
+    // Find the selected slot
+    const slot = timeSlots[activeTimeSlot].find(s => s.id === selectedSlotId);
+    if (!slot) return;
+    
+    // Calculate remaining space in the selected team
+    const remainingSpace = selectedTeam === 1 
+      ? slot.playerCount.maxPerTeam - slot.playerCount.team1 
+      : slot.playerCount.maxPerTeam - slot.playerCount.team2;
+    
+    // Only increment if there's room
+    if (userPlayerCount < remainingSpace) {
+      setUserPlayerCount(prev => prev + 1);
+    } else {
+      Alert.alert(
+        "Team Limit Reached",
+        `You can't add more than ${remainingSpace} player(s) to Team ${selectedTeam}.`,
+        [{ text: "OK", onPress: () => {} }]
+      );
+    }
+  }, [userPlayerCount, selectedSlotId, activeTimeSlot, timeSlots, selectedTeam]);
+  
+  // Decrement player count
+  const decrementPlayerCount = useCallback(() => {
+    if (userPlayerCount > 1) {
+      setUserPlayerCount(prev => prev - 1);
+    }
+  }, [userPlayerCount]);
+  
+  // Switch team selection
+  const switchTeam = useCallback(() => {
+    setSelectedTeam(prev => prev === 1 ? 2 : 1);
+    setUserPlayerCount(1); // Reset player count when switching teams
+  }, []);
+
+  // Handle showing player info section
+  const handleShowPlayerInfo = useCallback(() => {
+    if (userPlayerCount === 1) {
+      // For single player, fetch their unique ID (mock implementation)
+      setCurrentUserPlayerId(`PLAYER-${Math.random().toString(36).substr(2, 8).toUpperCase()}`);
+    } else {
+      // For multiple players, create empty slots
+      setPlayerIds(Array(userPlayerCount).fill(''));
+    }
+    setShowPlayerInfoSection(true);
+  }, [userPlayerCount]);
+
+  // Handle player ID changes for multiple players
+  const handlePlayerIdChange = useCallback((index: number, value: string) => {
+    setPlayerIds(prev => {
+      const newPlayerIds = [...prev];
+      newPlayerIds[index] = value;
+      return newPlayerIds;
+    });
+  }, []);
+
+  // Validate player IDs before confirmation
+  const validatePlayerIds = useCallback(() => {
+    if (userPlayerCount === 1) return true; // Already has ID
+    
+    // Check all player IDs are filled
+    if (playerIds.some(id => !id.trim())) {
+      Alert.alert("Error", "Please enter IDs for all players");
+      return false;
+    }
+    
+    // Check for duplicate IDs
+    const uniqueIds = new Set(playerIds);
+    if (uniqueIds.size !== playerIds.length) {
+      Alert.alert("Error", "Player IDs must be unique");
+      return false;
+    }
+    
+    return true;
+  }, [playerIds, userPlayerCount]);
+
+  // Find the selected slot object
+  const selectedSlot = selectedSlotId && activeTimeSlot 
+    ? timeSlots[activeTimeSlot].find(slot => slot.id === selectedSlotId) 
+    : null;
+
+  // Calculate spaces left in each team for the selected slot
+  const team1SpacesLeft = selectedSlot 
+    ? selectedSlot.playerCount.maxPerTeam - selectedSlot.playerCount.team1 
+    : 0;
+  
+  const team2SpacesLeft = selectedSlot 
+    ? selectedSlot.playerCount.maxPerTeam - selectedSlot.playerCount.team2 
+    : 0;
+
+  // Render capacity indicator
+  const renderCapacityIndicator = useCallback((slot: TimeSlot) => {
+    const remaining = getRemainingSpaces(slot);
+    const total = slot.playerCount.maxPerTeam * 2;
+    const filledPercentage = ((total - remaining) / total) * 100;
+    
+    const capacityStatus = getCapacityStatus(slot);
+    
+    return (
+      <View style={styles.capacityContainer}>
+        <View style={styles.capacityBarOuter}>
+          <View 
+            style={[
+              styles.capacityBarInner, 
+              { 
+                width: `${filledPercentage}%`,
+                backgroundColor: capacityStatus.color 
+              }
+            ]} 
+          />
+        </View>
+        <Text style={[styles.capacityText, { color: capacityStatus.color }]}>
+          {remaining} spots left
+        </Text>
+      </View>
+    );
+  }, [getRemainingSpaces, getCapacityStatus]);
+
+  // Handle booking confirmation
+  const confirmBooking = useCallback(() => {
+    if (!selectedSlot || !selectedSlotId || !activeTimeSlot) {
+      Alert.alert("Please select a time slot");
+      return;
+    }
+    
+    if (showPlayerInfoSection && !validatePlayerIds()) {
+      return;
+    }
+    
+    // Add the user's players to the selected team
+    setTimeSlots(prev => {
+      const newTimeSlots = { ...prev };
+      const periodSlots = [...newTimeSlots[activeTimeSlot]];
+      
+      const slotIndex = periodSlots.findIndex(s => s.id === selectedSlotId);
+      if (slotIndex >= 0) {
+        const updatedSlot = { ...periodSlots[slotIndex] };
+        
+        if (selectedTeam === 1) {
+          updatedSlot.playerCount = {
+            ...updatedSlot.playerCount,
+            team1: updatedSlot.playerCount.team1 + userPlayerCount
+          };
+        } else {
+          updatedSlot.playerCount = {
+            ...updatedSlot.playerCount,
+            team2: updatedSlot.playerCount.team2 + userPlayerCount
+          };
         }
-        if (!periodSlots[3].locked) {
-          periodSlots[3].locked = true;
-          periodSlots[3].selected = false; // Unselect if it was selected
-        }
+        
+        periodSlots[slotIndex] = updatedSlot;
+        newTimeSlots[activeTimeSlot] = periodSlots;
       }
       
       return newTimeSlots;
     });
-  }, []);
-
-  // Check if prerequisites are met for locked slots
-  const checkPrerequisitesMet = useCallback((period: TimeSlotPeriod) => {
-    const slot1Selected = timeSlots[period][0].selected;
-    const slot3Selected = timeSlots[period][2].selected;
-    return slot1Selected && slot3Selected;
-  }, [timeSlots]);
+    
+    // Reset states
+    setSelectedSlotId(null);
+    setUserPlayerCount(1);
+    setShowPlayerInfoSection(false);
+    setPlayerIds(['']);
+    
+    Alert.alert(
+      "Booking Confirmed!",
+      `You've booked ${userPlayerCount} player${userPlayerCount > 1 ? 's' : ''} for Team ${selectedTeam} at ${selectedSlot.time}.`,
+      [{ text: "OK", onPress: () => {} }]
+    );
+  }, [selectedSlot, selectedSlotId, activeTimeSlot, selectedTeam, userPlayerCount, showPlayerInfoSection, validatePlayerIds]);
 
   // Get the details for the active tab
   const activeDetails = gameModeDetails[activeTab];
@@ -298,6 +640,8 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   // Handle date selection
   const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
+    // Reset slot selection when date changes
+    setSelectedSlotId(null);
   }, []);
 
   // Render date item with performance optimizations
@@ -332,14 +676,42 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
     index,
   }), []);
 
-  // Function to handle tapping on a locked slot
-  const handleLockedSlotTap = useCallback((period: TimeSlotPeriod) => {
-    Alert.alert(
-      "Slot Locked",
-      "You need to book slots 1 and 3 first to unlock this slot.",
-      [{ text: "OK", onPress: () => {} }]
+  // Render player info section
+  const PlayerInfoSection = memo(() => {
+    if (userPlayerCount === 1) {
+      return (
+        <View style={styles.playerInfoContainer}>
+          <Text style={styles.playerInfoHeader}>Your Player Information</Text>
+          <View style={styles.playerIdContainer}>
+            <Text style={styles.playerIdLabel}>Player ID:</Text>
+            <Text style={styles.playerIdValue}>{currentUserPlayerId}</Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.playerInfoContainer}>
+        <Text style={styles.playerInfoHeader}>Enter Player Information</Text>
+        <Text style={styles.playerInfoSubheader}>
+          Please enter unique IDs for all {userPlayerCount} players
+        </Text>
+        
+        {playerIds.map((id, index) => (
+          <View key={index} style={styles.playerInputContainer}>
+            <Text style={styles.playerInputLabel}>Player {index + 1}:</Text>
+            <TextInput
+              style={styles.playerInput}
+              value={id}
+              onChangeText={(text) => handlePlayerIdChange(index, text)}
+              placeholder={`Enter ID for player ${index + 1}`}
+              placeholderTextColor="#999"
+            />
+          </View>
+        ))}
+      </View>
     );
-  }, []);
+  });
 
   return (
     <ScrollView 
@@ -423,79 +795,176 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
               key={option.id}
               style={[
                 styles.timeSlotIconButton,
-                activeTimeSlot === option.id && styles.activeTimeSlotButton
+                activeTimeSlot === option.id && !selectedSlotId && styles.activeTimeSlotButton,
+                activeTimeSlot === option.id && selectedSlotId && styles.collapsedTimeSlotButton
               ]}
               onPress={() => toggleTimeSlot(option.id as TimeSlotPeriod)}
             >
               <Feather 
                 name={option.icon as any} 
                 size={28} 
-                color={activeTimeSlot === option.id ? '#fff' : option.color} 
+                color={(activeTimeSlot === option.id && !selectedSlotId) ? '#fff' : option.color} 
               />
+              {activeTimeSlot === option.id && selectedSlotId && (
+                <Text style={styles.collapsedSlotText}>
+                  {option.label}
+                </Text>
+              )}
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Expanded Slots */}
-        {activeTimeSlot && (
-          <View style={styles.expandedSlotsContainer}>
-            <View style={styles.expandedSlotsHeader}>
-              <Text style={styles.expandedSlotsTitle}>
-                {timeSlotOptions.find(o => o.id === activeTimeSlot)?.label} Slots
-                {selectedDate && ` - ${selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
-              </Text>
+        {/* Selected Time Slot Info */}
+        {selectedSlot && selectedSlotId && (
+          <View style={styles.selectedSlotInfoContainer}>
+            <View style={styles.selectedSlotHeader}>
+              <Text style={styles.selectedSlotTime}>{selectedSlot.time}</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setSelectedSlotId(null)}
+              >
+                <AntDesign name="close" size={18} color="#666" />
+              </TouchableOpacity>
             </View>
-            <View style={styles.slotsList}>
-              {timeSlots[activeTimeSlot].map((slot, index) => (
-                <TouchableOpacity 
-                  key={slot.id}
-                  style={[
-                    styles.slotItem, 
-                    !slot.available && styles.slotUnavailable,
-                    slot.locked && styles.slotLocked,
-                    slot.selected && styles.slotSelected
-                  ]}
-                  disabled={!slot.available || slot.locked}
-                  onPress={() => 
-                    slot.locked 
-                      ? handleLockedSlotTap(activeTimeSlot) 
-                      : handleSlotSelection(slot.id, activeTimeSlot)
+            
+            <View style={styles.playerSelectionContainer}>
+              <View style={styles.teamSelectionContainer}>
+                <Text style={styles.teamSelectionHeader}>Select your team:</Text>
+                <View style={styles.teamButtons}>
+                  <TouchableOpacity 
+                    style={[
+                      styles.teamButton, 
+                      selectedTeam === 1 && styles.selectedTeamButton,
+                      team1SpacesLeft === 0 && styles.fullTeamButton
+                    ]}
+                    onPress={() => setSelectedTeam(1)}
+                    disabled={team1SpacesLeft === 0}
+                  >
+                    <Text style={[
+                      styles.teamButtonText,
+                      selectedTeam === 1 && styles.selectedTeamButtonText
+                    ]}>
+                      Team 1 ({selectedSlot.playerCount.team1}/{selectedSlot.playerCount.maxPerTeam})
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.teamButton, 
+                      selectedTeam === 2 && styles.selectedTeamButton,
+                      team2SpacesLeft === 0 && styles.fullTeamButton
+                    ]}
+                    onPress={() => setSelectedTeam(2)}
+                    disabled={team2SpacesLeft === 0}
+                  >
+                    <Text style={[
+                      styles.teamButtonText,
+                      selectedTeam === 2 && styles.selectedTeamButtonText
+                    ]}>
+                      Team 2 ({selectedSlot.playerCount.team2}/{selectedSlot.playerCount.maxPerTeam})
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              
+              <View style={styles.playerCountContainer}>
+                <Text style={styles.playerCountHeader}>
+                  Number of players you're bringing:
+                </Text>
+                
+                <View style={styles.playerCountControls}>
+                  <TouchableOpacity 
+                    style={styles.countButton}
+                    onPress={decrementPlayerCount}
+                    disabled={userPlayerCount <= 1}
+                  >
+                    <Feather name="minus" size={24} color={userPlayerCount <= 1 ? '#ccc' : '#3A7CA5'} />
+                  </TouchableOpacity>
+                  
+                  <Text style={styles.playerCountValue}>{userPlayerCount}</Text>
+                  
+                  <TouchableOpacity 
+                    style={styles.countButton}
+                    onPress={incrementPlayerCount}
+                    disabled={
+                      (selectedTeam === 1 && userPlayerCount >= team1SpacesLeft) ||
+                      (selectedTeam === 2 && userPlayerCount >= team2SpacesLeft)
+                    }
+                  >
+                    <Feather 
+                      name="plus" 
+                      size={24} 
+                      color={
+                        (selectedTeam === 1 && userPlayerCount >= team1SpacesLeft) ||
+                        (selectedTeam === 2 && userPlayerCount >= team2SpacesLeft) 
+                        ? '#ccc' 
+                        : '#3A7CA5'
+                      } 
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            
+            {/* Player Information Section */}
+            {showPlayerInfoSection && <PlayerInfoSection />}
+            
+            {/* Confirm or Continue Button */}
+            {!showPlayerInfoSection ? (
+              <TouchableOpacity 
+                style={styles.confirmButton}
+                onPress={handleShowPlayerInfo}
+              >
+                <Text style={styles.confirmButtonText}>Continue to Player Info</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity 
+                style={styles.confirmButton}
+                onPress={confirmBooking}
+              >
+                <Text style={styles.confirmButtonText}>Confirm Booking</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {/* Time Slot Lists */}
+        {activeTimeSlot && !selectedSlotId && (
+          <View style={styles.timeSlotListContainer}>
+            {timeSlots[activeTimeSlot].map((slot) => (
+              <TouchableOpacity
+                key={slot.id}
+                style={[
+                  styles.timeSlotButton,
+                  !slot.available && styles.unavailableSlot,
+                  slot.locked && styles.lockedSlot
+                ]}
+                onPress={() => {
+                  if (slot.locked) {
+                    handleLockedSlotTap(activeTimeSlot);
+                  } else if (slot.available) {
+                    handleSlotSelection(slot.id, activeTimeSlot);
                   }
-                >
+                }}
+                disabled={!slot.available}
+              >
+                <View style={styles.slotTimeContainer}>
                   <Text style={[
-                    styles.slotTime, 
-                    !slot.available && styles.slotUnavailableText,
-                    slot.locked && styles.slotLockedText
+                    styles.slotTime,
+                    !slot.available && styles.unavailableSlotText,
+                    slot.locked && styles.lockedSlotText
                   ]}>
                     {slot.time}
                   </Text>
                   
-                  <View style={styles.slotStatusContainer}>
-                    {slot.locked && (
-                      <MaterialIcons name="lock" size={16} color="#999" style={styles.lockIcon} />
-                    )}
-                    <Text style={[
-                      styles.slotStatus, 
-                      !slot.available && styles.slotUnavailableText,
-                      slot.locked && styles.slotLockedText,
-                      slot.selected && styles.slotSelectedText
-                    ]}>
-                      {slot.selected ? 'Selected' : 
-                      slot.available ? (slot.locked ? 'Locked' : 'Available') : 'Booked'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Prerequisites message for locked slots */}
-            {timeSlots[activeTimeSlot].some(slot => slot.locked) && (
-              <View style={styles.prerequisitesContainer}>
-                <Text style={styles.prerequisitesText}>
-                  Select slots 1 and 3 to unlock slots 2 and 4
-                </Text>
-              </View>
-            )}
+                  {slot.locked && (
+                    <FontAwesome name="lock" size={16} color="#FF9800" style={styles.lockIcon} />
+                  )}
+                </View>
+                
+                {slot.available && !slot.locked && renderCapacityIndicator(slot)}
+              </TouchableOpacity>
+            ))}
           </View>
         )}
       </View>
@@ -503,54 +972,62 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   );
 };
 
+
+
+
 const styles = StyleSheet.create({
+  // Tab styles
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 15,
-    backgroundColor: '#3A7CA5',
-    borderRadius: 25,
-    padding: 5,
+    marginVertical: 16,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 10,
+    padding: 4,
+    width: '90%',
+    alignSelf: 'center',
   },
   tabButton: {
-    padding: 10,
-    borderRadius: 25,
-    marginHorizontal: 5,
-    backgroundColor: '#3A7CA5',
-  },
-  activeTab: {
-    backgroundColor: '#fff',
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 8,
   },
   tabText: {
+    fontWeight: '500',
     color: '#fff',
-    fontSize: 16,
+  },
+  activeTab: {
+    backgroundColor: '#3A7CA5',
   },
   activeTabText: {
-    color: '#3A7CA5',
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
+
+  // Game details card
   detailCard: {
-    backgroundColor: '#f5f8fa',
-    borderRadius: 15,
-    padding: 16,
     width: '90%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
-    marginTop: 10,
   },
   detailTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#3A7CA5',
+    fontWeight: '600',
+    color: '#333',
     marginBottom: 8,
   },
   detailDescription: {
     fontSize: 14,
-    color: '#444',
-    marginBottom: 12,
+    color: '#666',
     lineHeight: 20,
+    marginBottom: 12,
   },
   detailStats: {
     flexDirection: 'row',
@@ -558,74 +1035,69 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   statItem: {
-    alignItems: 'center',
+    flex: 1,
   },
   statLabel: {
     fontSize: 12,
-    color: '#777',
-    marginBottom: 4,
+    color: '#999',
+    marginBottom: 2,
   },
   statValue: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#333',
   },
-  // Date Selection Styles
+
+  // Date selection
   dateSelectionContainer: {
     width: '90%',
-    marginTop: 20,
+    marginBottom: 20,
   },
   monthSelector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  monthButton: {
+    padding: 4,
   },
   monthText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#333',
   },
-  monthButton: {
-    padding: 5,
-  },
   datesList: {
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   dateItem: {
     width: 60,
-    height: 80,
+    height: 75,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 5,
-    borderRadius: 10,
-    backgroundColor: '#f5f8fa',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    marginHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: '#F5F5F5',
   },
   selectedDateItem: {
     backgroundColor: '#3A7CA5',
   },
-  dayName: {
-    fontSize: 12,
-    color: '#777',
-    marginBottom: 5,
-  },
-  dateNumber: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  selectedDateText: {
-    color: '#fff',
-  },
   todayDateItem: {
     borderWidth: 1,
     borderColor: '#3A7CA5',
+  },
+  dayName: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  dateNumber: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  selectedDateText: {
+    color: '#FFFFFF',
   },
   todayIndicator: {
     width: 6,
@@ -633,19 +1105,19 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: '#3A7CA5',
     position: 'absolute',
-    bottom: 10,
+    bottom: 6,
   },
-  // Time Slots Styles
+
+  // Time slots
   slotsContainer: {
     width: '90%',
-    marginTop: 20,
     marginBottom: 20,
   },
   slotsHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   timeSlotIconsRow: {
     flexDirection: 'row',
@@ -656,34 +1128,24 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#f5f8fa',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   activeTimeSlotButton: {
     backgroundColor: '#3A7CA5',
+    borderColor: '#3A7CA5',
   },
   expandedSlotsContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
-    marginTop: 6,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 8,
   },
   expandedSlotsHeader: {
-    backgroundColor: '#f5f8fa',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    marginBottom: 12,
   },
   expandedSlotsTitle: {
     fontSize: 16,
@@ -691,72 +1153,342 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   slotsList: {
-    padding: 10,
+    gap: 10,
   },
   slotItem: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: 'column',
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  slotMainContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    alignItems: 'center',
     marginBottom: 8,
   },
-  slotUnavailable: {
-    backgroundColor: '#f5f5f5',
-  },
-  slotLocked: {
-    backgroundColor: '#f5f5f5',
-    opacity: 0.8,
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  slotSelected: {
-    backgroundColor: '#e8f4fd',
-    borderColor: '#3A7CA5',
-    borderWidth: 1,
-  },
   slotTime: {
-    fontSize: 14,
-    color: '#333',
-  },
-  slotStatus: {
-    fontSize: 14,
-    color: '#4CAF50',
+    fontSize: 15,
     fontWeight: '500',
-  },
-  slotUnavailableText: {
-    color: '#999',
-  },
-  slotLockedText: {
-    color: '#999',
-  },
-  slotSelectedText: {
-    color: '#3A7CA5',
-    fontWeight: 'bold',
+    color: '#333',
   },
   slotStatusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  slotStatus: {
+    fontSize: 14,
+    color: '#4CAF50',
+  },
+  slotSelected: {
+    borderLeftColor: '#3A7CA5',
+    backgroundColor: '#E3F2FD',
+  },
+  slotSelectedText: {
+    color: '#3A7CA5',
+  },
+  slotUnavailable: {
+    borderLeftColor: '#9E9E9E',
+    opacity: 0.7,
+  },
+  slotUnavailableText: {
+    color: '#9E9E9E',
+  },
+  slotLocked: {
+    borderLeftColor: '#BDBDBD',
+    backgroundColor: '#F5F5F5',
+  },
+  slotLockedText: {
+    color: '#999',
+  },
+  slotFull: {
+    borderLeftColor: '#E53935',
+  },
+  slotFullText: {
+    color: '#E53935',
+  },
   lockIcon: {
     marginRight: 4,
   },
-  prerequisitesContainer: {
-    padding: 10,
-    backgroundColor: '#fff8e1',
-    borderTopWidth: 1,
-    borderTopColor: '#ffe0b2',
+  
+  // Selected slot info
+    selectedSlotInfoContainer: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 12,
+      padding: 16,
+      marginTop: 16,
+      elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    selectedSlotHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    selectedSlotTime: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#333',
+    },
+    closeButton: {
+      padding: 4,
+    },
+  
+    // Team indicators
+    capacitySection: {
+      marginTop: 8,
+    },
+  teamIndicators: {
+    marginBottom: 8,
+  },
+  teamIndicator: {
+    marginBottom: 8,
+  },
+  teamHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  teamLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#555',
+  },
+  teamPlayerIcons: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  prerequisitesText: {
+  playerIcon: {
+    marginRight: 6,
+  },
+  joinTeamButton: {
+    backgroundColor: '#3A7CA5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  joinTeamText: {
+    color: '#FFFFFF',
     fontSize: 12,
-    color: '#FF9800',
-    fontStyle: 'italic',
-  }
+    fontWeight: '500',
+  },
+  
+  // Capacity
+  capacityContainer: {
+    marginTop: 10,
+  },
+  capacityBarOuter: {
+    height: 6,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  capacityBarInner: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  capacityText: {
+    fontSize: 12,
+    textAlign: 'right',
+  },
+  lockedMessageContainer: {
+    marginTop: 8,
+  },
+  lockedMessage: {
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+  },
+  collapsedSlotText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+  collapsedTimeSlotButton: {
+    backgroundColor: '#F5F5F5',
+    width: 'auto',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  
+  // Team selection styles
+  teamButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  selectedTeamButton: {
+    backgroundColor: '#3A7CA5',
+  },
+  fullTeamButton: {
+    backgroundColor: '#E0E0E0',
+    opacity: 0.7,
+  },
+  teamButtonText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  selectedTeamButtonText: {
+    color: '#FFFFFF',
+  },
+  playerSelectionContainer: {
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  playerCountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  playerCountHeader: {
+    fontSize: 14,
+    color: '#555',
+  },
+  playerCountControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  countButton: {
+    backgroundColor: '#F5F5F5',
+    padding: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  playerCountValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginHorizontal: 8,
+  },
+  confirmButton: {
+    backgroundColor: '#3A7CA5',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  timeSlotButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  unavailableSlot: {
+    backgroundColor: '#E0E0E0',
+    opacity: 0.7,
+  },
+  unavailableSlotText: {
+    color: '#999999',
+  },
+  lockedSlot: {
+    backgroundColor: '#FF9800',
+    opacity: 0.7,
+  },
+  lockedSlotText: {
+    color: '#FFFFFF',
+  },
+  timeSlotListContainer: {
+    marginTop: 16,
+  },
+  timeSlotList: {
+    gap: 10,
+  },
+  teamSelectionContainer: {
+    marginBottom: 16,
+  },
+  teamSelectionHeader: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 8,
+  },
+  teamButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  slotTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  playerInfoContainer: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  playerInfoHeader: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  playerInfoSubheader: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+  },
+  playerIdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playerIdLabel: {
+    fontSize: 14,
+    color: '#555',
+    marginRight: 8,
+  },
+  playerIdValue: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+  },
+  playerInputContainer: {
+    marginBottom: 12,
+  },
+  playerInputLabel: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 4,
+  },
+  playerInput: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 4,
+    padding: 8,
+    fontSize: 14,
+    color: '#333',
+  },
 });
 
 export default Booking;
