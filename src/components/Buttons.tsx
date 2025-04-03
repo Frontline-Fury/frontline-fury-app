@@ -1,25 +1,47 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle, GestureResponderEvent } from "react-native";
 
-type ButtonProps = {
+interface CustomButtonProps {
   title: string;
-  onPress: () => void;
+  onPress: (event: GestureResponderEvent) => void;
   backgroundColor?: string;
   textColor?: string;
-};
+  disabled?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
+  activeOpacity?: number;
+}
 
-const CustomButton: React.FC<ButtonProps> = ({
+const CustomButton: React.FC<CustomButtonProps> = ({
   title,
   onPress,
   backgroundColor = "#FF6600",
   textColor = "white",
+  disabled = false,
+  style,
+  textStyle,
+  activeOpacity = 0.7,
 }) => {
   return (
     <TouchableOpacity 
-      style={[styles.button, { backgroundColor }]} 
+      style={[
+        styles.button, 
+        { backgroundColor: disabled ? '#cccccc' : backgroundColor },
+        style
+      ]} 
       onPress={onPress}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
     >
-      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      <Text 
+        style={[
+          styles.text, 
+          { color: disabled ? '#666666' : textColor },
+          textStyle
+        ]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
