@@ -14,4 +14,10 @@ export type RootStackParamList = {
     gameId?: number; 
     gameName?: string 
   } | undefined;
+  playerId: {
+    playerId: string | undefined;
+    playerName: string | undefined;
+    playerScore: string | undefined;
+  };
+  player: undefined;
 };
