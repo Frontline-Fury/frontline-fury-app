@@ -1,216 +1,422 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigaitonBar/BottomTabNavigation'; // Update path as needed
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  Image, 
+  TouchableOpacity, 
+  FlatList, 
+  SafeAreaView,
+  StatusBar,
+  ScrollView
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-type ConnectionScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'GameStats'>;
-};
+// Interface for friend data
+interface FriendItem {
+  id: string;
+  name: string;
+  bio: string;
+  avatar: any; // Image source
+  isAdded?: boolean;
+}
 
-const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ navigation }) => {
+// Tabs for different friend categories
+type FriendTab = 'game' | 'twitter' | 'contacts';
+const FriendsScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const [activeTab, setActiveTab] = useState<FriendTab>('game');
+  const [friendsList, setFriendsList] = useState<FriendItem[]>([
+    {
+      id: '1',
+      name: 'Asana islam chua',
+      bio: 'Love music, love world',
+      avatar: require('../../../assets/ff.png'),
+      isAdded: false
+    },
+    {
+      id: '2',
+      name: 'Alamgir Hosian',
+      bio: 'Love music, love world',
+      avatar: require('../../../assets/ff.png'),
+      isAdded: true
+    },
+    {
+      id: '3',
+      name: 'Bablu khan bablu',
+      bio: 'Love music, love world',
+      avatar: require('../../../assets/ff.png'),
+      isAdded: false
+    },
+    {
+      id: '4',
+      name: 'Shahidul Islam Shishir',
+      bio: 'Love music, love world',
+      avatar: require('../../../assets/ff.png'),
+      isAdded: false
+    },
+    {
+      id: '5',
+      name: 'Shahidul Islam Shishir',
+      bio: 'Love music, love world',
+      avatar: require('../../../assets/ff.png'),
+      isAdded: true
+    },
+  ]);
+  
+  // Function to handle adding/removing a friend
+  const handleAddFriend = (id: string) => {
+    setFriendsList(currentList => 
+      currentList.map(friend => 
+        friend.id === id ? { ...friend, isAdded: !friend.isAdded } : friend
+      )
+    );
+  };
+  
+  // Alphabetical index for the list
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  
+  // Group friends by first letter
+  const groupedFriends = friendsList.reduce((acc, friend) => {
+    const firstLetter = friend.name.charAt(0).toUpperCase();
+    if (!acc[firstLetter]) {
+      acc[firstLetter] = [];
+    }
+    acc[firstLetter].push(friend);
+    return acc;
+  }, {} as { [key: string]: FriendItem[] });
+  
+  // Sort alphabetically
+  const sortedKeys = Object.keys(groupedFriends).sort();
+  
+  // Render friend item
+  const renderFriendItem = ({ item }: { item: FriendItem }) => (
+    <View style={styles.friendItem}>
+      <View style={styles.friendInfo}>
+        <Image source={item.avatar} style={styles.avatar} />
+        <View style={styles.textContainer}>
+          <Text style={styles.friendName}>{item.name}</Text>
+          <Text style={styles.friendBio}>{item.bio}</Text>
+        </View>
+      </View>
+      <TouchableOpacity 
+        style={[
+          styles.addButton, 
+          item.isAdded ? styles.addedButton : styles.addButtonActive
+        ]} 
+        onPress={() => handleAddFriend(item.id)}
+      >
+        <Text style={[
+          styles.addButtonText,
+          item.isAdded ? styles.addedButtonText : styles.addButtonActiveText
+        ]}>
+          {item.isAdded ? 'Added' : 'Add'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+  
+  // Render the alphabet index at the side
+  const renderAlphabetIndex = () => (
+    <View style={styles.alphabetContainer}>
+      {alphabet.map(letter => (
+        <Text 
+          key={letter} 
+          style={[
+            styles.alphabetLetter,
+            sortedKeys.includes(letter) ? styles.activeAlphabetLetter : {}
+          ]}
+        >
+          {letter}
+        </Text>
+      ))}
+    </View>
+  );
+  
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="#E0E0E0" />
+          <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Game Stats</Text>
-        <View style={{ width: 24 }} /> {/* Empty view for alignment */}
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>Your Friends</Text>
+          <Text style={styles.headerSubtitle}>256 Friends</Text>
+        </View>
+        <TouchableOpacity style={styles.profileButton}>
+          <Image 
+            source={require('../../../assets/ff.png')} 
+            style={styles.profileImage} 
+          />
+        </TouchableOpacity>
       </View>
       
-      <ScrollView style={styles.content}>
-        {/* Overall Stats */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Overall Performance</Text>
-          
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>142</Text>
-              <Text style={styles.statLabel}>Games Played</Text>
-            </View>
-            
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>68%</Text>
-              <Text style={styles.statLabel}>Win Rate</Text>
-            </View>
-            
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>820</Text>
-              <Text style={styles.statLabel}>Avg Score</Text>
-            </View>
-            
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>1,243</Text>
-              <Text style={styles.statLabel}>High Score</Text>
-            </View>
-          </View>
-        </View>
+      {/* Tab Navigation */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'game' ? styles.activeTab : {}]} 
+          onPress={() => setActiveTab('game')}
+        >
+          <Text style={[
+            styles.tabText, 
+            activeTab === 'game' ? styles.activeTabText : {}
+          ]}>
+            Game friends
+          </Text>
+          {activeTab === 'game' && <View style={styles.activeTabIndicator} />}
+        </TouchableOpacity>
         
-        {/* Recent Games */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Games</Text>
-          
-          {[1, 2, 3].map((game) => (
-            <View key={game} style={styles.gameCard}>
-              <View style={styles.gameHeader}>
-                <Text style={styles.gameDate}>Apr {10 + game}, 2025</Text>
-                <View style={[
-                  styles.resultBadge, 
-                  game % 2 === 0 ? styles.winBadge : styles.lossBadge
-                ]}>
-                  <Text style={styles.resultText}>
-                    {game % 2 === 0 ? 'WIN' : 'LOSS'}
-                  </Text>
-                </View>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'twitter' ? styles.activeTab : {}]} 
+          onPress={() => setActiveTab('twitter')}
+        >
+          <Text style={[
+            styles.tabText, 
+            activeTab === 'twitter' ? styles.activeTabText : {}
+          ]}>
+            Twitter followers
+          </Text>
+          {activeTab === 'twitter' && <View style={styles.activeTabIndicator} />}
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'contacts' ? styles.activeTab : {}]} 
+          onPress={() => setActiveTab('contacts')}
+        >
+          <Text style={[
+            styles.tabText, 
+            activeTab === 'contacts' ? styles.activeTabText : {}
+          ]}>
+            Contacts
+          </Text>
+          {activeTab === 'contacts' && <View style={styles.activeTabIndicator} />}
+        </TouchableOpacity>
+      </View>
+      
+      {/* Search/Filter text */}
+      <Text style={styles.filterText}>Choose your friend</Text>
+      
+      {/* Friend list */}
+      <View style={styles.listContainer}>
+        <ScrollView>
+          {sortedKeys.map(key => (
+            <View key={key}>
+              <View style={styles.letterHeader}>
+                <Text style={styles.letterText}>{key}</Text>
               </View>
-              
-              <View style={styles.gameDetails}>
-                <View style={styles.detailColumn}>
-                  <Text style={styles.detailLabel}>Score</Text>
-                  <Text style={styles.detailValue}>{750 + (game * 45)}</Text>
+              {groupedFriends[key].map(friend => (
+                <View key={friend.id}>
+                  {renderFriendItem({ item: friend })}
                 </View>
-                
-                <View style={styles.detailColumn}>
-                  <Text style={styles.detailLabel}>Accuracy</Text>
-                  <Text style={styles.detailValue}>{62 + (game * 4)}%</Text>
-                </View>
-                
-                <View style={styles.detailColumn}>
-                  <Text style={styles.detailLabel}>Time</Text>
-                  <Text style={styles.detailValue}>{8 - game}:32</Text>
-                </View>
-              </View>
+              ))}
             </View>
           ))}
           
-          <TouchableOpacity style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>View All Games</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
+          {/* Spacer for bottom button */}
+          <View style={{ height: 100 }} />
+        </ScrollView>
+        
+        {/* Side alphabet index */}
+        {renderAlphabetIndex()}
+      </View>
+      
+      {/* Next Button */}
+      <View style={styles.nextButtonContainer}>
+        <TouchableOpacity style={styles.nextButton}>
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E2329',
+    backgroundColor: '#f5f9ff',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    backgroundColor: '#282E34',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
   backButton: {
-    padding: 4,
+    padding: 5,
+  },
+  headerTextContainer: {
+    flex: 1,
+    marginLeft: 15,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#E0E0E0',
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#E0E0E0',
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  statCard: {
-    width: '48%',
-    backgroundColor: '#282E34',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  statValue: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#3A7CA5',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: '#111',
   },
-  statLabel: {
+  headerSubtitle: {
     fontSize: 14,
-    color: '#A0A0A0',
+    color: '#888',
+    marginTop: 3,
   },
-  gameCard: {
-    backgroundColor: '#282E34',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+  profileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
-  gameHeader: {
+  profileImage: {
+    width: '100%',
+    height: '100%',
+  },
+  tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingHorizontal: 20,
   },
-  gameDate: {
-    fontSize: 14,
-    color: '#A0A0A0',
+  tab: {
+    paddingVertical: 15,
+    marginRight: 20,
+    position: 'relative',
   },
-  resultBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  winBadge: {
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-  },
-  lossBadge: {
-    backgroundColor: 'rgba(244, 67, 54, 0.2)',
-  },
-  resultText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#E0E0E0',
-  },
-  gameDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  detailColumn: {
-    alignItems: 'center',
-  },
-  detailLabel: {
-    fontSize: 12,
-    color: '#A0A0A0',
-    marginBottom: 4,
-  },
-  detailValue: {
+  activeTab: {},
+  tabText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: '#999',
   },
-  viewAllButton: {
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#3A7CA5',
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  viewAllText: {
-    color: '#FFFFFF',
+  activeTabText: {
+    color: '#333',
     fontWeight: '600',
+  },
+  activeTabIndicator: {
+    position: 'absolute',
+    bottom: -1,
+    left: 0,
+    right: 0,
+    height: 3,
+    backgroundColor: '#5065CB',
+    borderRadius: 3,
+  },
+  filterText: {
+    fontSize: 16,
+    color: '#777',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  listContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  letterHeader: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: 'transparent',
+  },
+  letterText: {
+    fontSize: 14,
+    color: '#888',
+    fontWeight: '500',
+  },
+  friendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  friendInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  textContainer: {
+    marginLeft: 15,
+  },
+  friendName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  friendBio: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 2,
+  },
+  addButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  addButtonActive: {
+    backgroundColor: '#5065CB',
+    borderColor: '#5065CB',
+  },
+  addedButton: {
+    backgroundColor: 'transparent',
+    borderColor: '#e0e0e0',
+  },
+  addButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  addButtonActiveText: {
+    color: 'white',
+  },
+  addedButtonText: {
+    color: '#888',
+  },
+  alphabetContainer: {
+    position: 'absolute',
+    right: 5,
+    top: 10,
+    bottom: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  alphabetLetter: {
+    fontSize: 12,
+    color: '#ccc',
+    fontWeight: '500',
+  },
+  activeAlphabetLetter: {
+    color: '#5065CB',
+    fontWeight: '600',
+  },
+  nextButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  nextButton: {
+    backgroundColor: '#5065CB',
+    paddingHorizontal: 40,
+    paddingVertical: 15,
+    borderRadius: 30,
+    width: '90%',
+  },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 
-export default ConnectionScreen;
+export default FriendsScreen
