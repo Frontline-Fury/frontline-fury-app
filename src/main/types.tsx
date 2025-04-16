@@ -20,4 +20,16 @@ export type RootStackParamList = {
     playerScore: string | undefined;
   };
   player: undefined;
+  
+  GameStats: undefined;
+  Matches: undefined;
+  Achievements: undefined;
+  Connection: undefined;
+  Market: undefined;
+  Clans: undefined;
+  ShareApp: undefined;
+  RateUs: undefined;
+  Support: undefined;
+  ChangeLanguage: undefined;
+  Help: undefined;
 };

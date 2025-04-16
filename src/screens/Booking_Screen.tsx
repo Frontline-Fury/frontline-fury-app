@@ -15,6 +15,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../main/types';
 import { MaterialIcons, Feather, FontAwesome, AntDesign } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android') {
@@ -97,7 +98,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   // Player count that the user is bringing
   const [userPlayerCount, setUserPlayerCount] = useState<number>(1);
   
-  // Team selection (1 or 2)
+  // Team selection (1 or 2) 
   const [selectedTeam, setSelectedTeam] = useState<1 | 2>(1);
   
   // Date selection states
@@ -538,7 +539,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
   }, [playerIds, userPlayerCount]);
 
   // Find the selected slot object
-  const selectedSlot = selectedSlotId && activeTimeSlot 
+  const selectedSlot = selectedSlotId && activeTimeSlot
     ? timeSlots[activeTimeSlot].find(slot => slot.id === selectedSlotId) 
     : null;
 
@@ -715,7 +716,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
 
   return (
     <ScrollView 
-      style={{ flex: 1, backgroundColor: '#fff' }}
+      style={styles.container}
       contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
     >
@@ -736,7 +737,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
       </View>
       
       {/* Game Mode Detail Card */}
-      <View style={styles.detailCard}>
+      <View style={[styles.card, styles.detailCard]}>
         <Text style={styles.detailTitle}>{activeDetails.title}</Text>
         <Text style={styles.detailDescription}>{activeDetails.description}</Text>
         <View style={styles.detailStats}>
@@ -788,13 +789,13 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
       <View style={styles.slotsContainer}>
         <Text style={styles.slotsHeader}>Available Time Slots</Text>
 
-        {/* Time Slot Icons in Row */}
+        {/* Time Slot Icons */}
         <View style={styles.timeSlotIconsRow}>
           {timeSlotOptions.map(option => (
             <TouchableOpacity
               key={option.id}
               style={[
-                styles.timeSlotIconButton,
+                styles.button, styles.timeSlotIconButton,
                 activeTimeSlot === option.id && !selectedSlotId && styles.activeTimeSlotButton,
                 activeTimeSlot === option.id && selectedSlotId && styles.collapsedTimeSlotButton
               ]}
@@ -816,7 +817,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
 
         {/* Selected Time Slot Info */}
         {selectedSlot && selectedSlotId && (
-          <View style={styles.selectedSlotInfoContainer}>
+          <View style={[styles.card, styles.selectedSlotInfoContainer]}>
             <View style={styles.selectedSlotHeader}>
               <Text style={styles.selectedSlotTime}>{selectedSlot.time}</Text>
               <TouchableOpacity 
@@ -833,7 +834,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
                 <View style={styles.teamButtons}>
                   <TouchableOpacity 
                     style={[
-                      styles.teamButton, 
+                      styles.button, styles.teamButton,
                       selectedTeam === 1 && styles.selectedTeamButton,
                       team1SpacesLeft === 0 && styles.fullTeamButton
                     ]}
@@ -850,7 +851,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
                   
                   <TouchableOpacity 
                     style={[
-                      styles.teamButton, 
+                      styles.button, styles.teamButton,
                       selectedTeam === 2 && styles.selectedTeamButton,
                       team2SpacesLeft === 0 && styles.fullTeamButton
                     ]}
@@ -874,7 +875,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
                 
                 <View style={styles.playerCountControls}>
                   <TouchableOpacity 
-                    style={styles.countButton}
+                    style={[styles.button, styles.countButton]}
                     onPress={decrementPlayerCount}
                     disabled={userPlayerCount <= 1}
                   >
@@ -884,7 +885,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
                   <Text style={styles.playerCountValue}>{userPlayerCount}</Text>
                   
                   <TouchableOpacity 
-                    style={styles.countButton}
+                    style={[styles.button, styles.countButton]}
                     onPress={incrementPlayerCount}
                     disabled={
                       (selectedTeam === 1 && userPlayerCount >= team1SpacesLeft) ||
@@ -909,7 +910,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
             {/* Player Information Section */}
             {showPlayerInfoSection && <PlayerInfoSection />}
             
-            {/* Confirm or Continue Button */}
+            {/* Buttons */}
             {!showPlayerInfoSection ? (
               <TouchableOpacity 
                 style={styles.confirmButton}
@@ -931,7 +932,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
         {/* Time Slot Lists */}
         {activeTimeSlot && !selectedSlotId && (
           <View style={styles.timeSlotListContainer}>
-            {timeSlots[activeTimeSlot].map((slot) => (
+            {timeSlots[activeTimeSlot].map((slot, index) => (
               <TouchableOpacity
                 key={slot.id}
                 style={[
@@ -957,6 +958,7 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
                     {slot.time}
                   </Text>
                   
+                  {/* Lock icon */}
                   {slot.locked && (
                     <FontAwesome name="lock" size={16} color="#FF9800" style={styles.lockIcon} />
                   )}
@@ -976,14 +978,21 @@ const Booking: React.FC<BookingScreenProps> = ({ route, navigation }) => {
 
 
 const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    backgroundColor: '#1E2329',
+  },
   // Tab styles
   tabContainer: {
     flexDirection: 'row',
     marginVertical: 16,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
+    backgroundColor: '#3A7CA5',
+    borderRadius: 25,
     padding: 4,
     width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
     alignSelf: 'center',
   },
   tabButton: {
@@ -993,18 +1002,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   tabText: {
+    fontSize: 16,
+    color: '#E0E0E0',
     fontWeight: '500',
-    color: '#000',
   },
   activeTab: {
-    backgroundColor: '#3A7CA5',
+    backgroundColor: '#FF6B35',
   },
   activeTabText: {
     color: '#FFFFFF',
     fontWeight: '600',
   },
-
-  // Game details card
+  card: {
+    width: '90%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
   detailCard: {
     width: '90%',
     backgroundColor: '#FFFFFF',
@@ -1017,17 +1037,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  detailTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    detailTitle: {
+    fontFamily: 'Bebas Neue',
+    fontSize: 24,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   detailDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#E0E0E0',
     lineHeight: 20,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   detailStats: {
     flexDirection: 'row',
@@ -1039,15 +1059,14 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#999',
+    color: '#E0E0E0',
     marginBottom: 2,
   },
   statValue: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#333',
+    color: '#FFFFFF',
   },
-
   // Date selection
   dateSelectionContainer: {
     width: '90%',
@@ -1065,7 +1084,7 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFFFFF',
   },
   datesList: {
     paddingVertical: 8,
@@ -1077,19 +1096,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 4,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#1E2329',
   },
   selectedDateItem: {
     backgroundColor: '#3A7CA5',
   },
   todayDateItem: {
     borderWidth: 1,
-    borderColor: '#3A7CA5',
+    borderColor: '#FF6B35',
   },
   dayName: {
     fontSize: 12,
-    color: '#666',
-    marginBottom: 4,
+    color: '#E0E0E0',
+    marginBottom: 8,
   },
   dateNumber: {
     fontSize: 18,
@@ -1102,7 +1121,7 @@ const styles = StyleSheet.create({
   todayIndicator: {
     width: 6,
     height: 6,
-    borderRadius: 3,
+    borderRadius: 10,
     backgroundColor: '#3A7CA5',
     position: 'absolute',
     bottom: 6,
@@ -1116,15 +1135,15 @@ const styles = StyleSheet.create({
   slotsHeader: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   timeSlotIconsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 16,
+    marginBottom: 12,
   },
-  timeSlotIconButton: {
+    timeSlotIconButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -1137,12 +1156,12 @@ const styles = StyleSheet.create({
   activeTimeSlotButton: {
     backgroundColor: '#3A7CA5',
     borderColor: '#3A7CA5',
+
   },
   expandedSlotsContainer: {
-    backgroundColor: '#F9F9F9',
     borderRadius: 12,
     padding: 16,
-    marginTop: 8,
+    marginTop: 12,
   },
   expandedSlotsHeader: {
     marginBottom: 12,
@@ -1153,10 +1172,10 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   slotsList: {
-    gap: 10,
+    gap: 12,
   },
   slotItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E2329',
     borderRadius: 8,
     padding: 12,
     flexDirection: 'column',
@@ -1177,7 +1196,7 @@ const styles = StyleSheet.create({
   slotTime: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#333',
+    color: '#FFFFFF',
   },
   slotStatusContainer: {
     flexDirection: 'row',
@@ -1188,22 +1207,22 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
   },
   slotSelected: {
-    borderLeftColor: '#3A7CA5',
-    backgroundColor: '#E3F2FD',
+    borderLeftColor: '#0A3D62',
+    backgroundColor: '#1E2329',
   },
   slotSelectedText: {
-    color: '#3A7CA5',
+    color: '#FFFFFF',
   },
   slotUnavailable: {
     borderLeftColor: '#9E9E9E',
     opacity: 0.7,
   },
   slotUnavailableText: {
-    color: '#9E9E9E',
+    color: '#E0E0E0',
   },
   slotLocked: {
     borderLeftColor: '#BDBDBD',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#1E2329',
   },
   slotLockedText: {
     color: '#999',
@@ -1218,17 +1237,16 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   
-  // Selected slot info
-    selectedSlotInfoContainer: {
-      backgroundColor: '#FFFFFF',
-      borderRadius: 12,
-      padding: 16,
-      marginTop: 16,
-      elevation: 3,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
+  selectedSlotInfoContainer: {
+    backgroundColor: '#1E2329',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     },
     selectedSlotHeader: {
       flexDirection: 'row',
@@ -1240,10 +1258,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: '600',
       color: '#333',
-    },
-    closeButton: {
-      padding: 4,
-    },
+  },
+  closeButton: {
+    padding: 4,
+  },
   
     // Team indicators
     capacitySection: {
@@ -1302,15 +1320,14 @@ const styles = StyleSheet.create({
   },
   capacityText: {
     fontSize: 12,
-    textAlign: 'right',
+    color: '#E0E0E0',
   },
   lockedMessageContainer: {
-    marginTop: 8,
+    marginTop: 12,
   },
   lockedMessage: {
     fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
+    color: '#E0E0E0',
   },
   collapsedSlotText: {
     fontSize: 12,
@@ -1328,11 +1345,12 @@ const styles = StyleSheet.create({
   
   // Team selection styles
   teamButton: {
+    backgroundColor: '#1E2329',
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    
     marginHorizontal: 4,
     alignItems: 'center',
   },
@@ -1345,7 +1363,7 @@ const styles = StyleSheet.create({
   },
   teamButtonText: {
     fontSize: 14,
-    color: '#333',
+    color: '#E0E0E0',
     fontWeight: '500',
   },
   selectedTeamButtonText: {
@@ -1371,14 +1389,14 @@ const styles = StyleSheet.create({
   },
   countButton: {
     backgroundColor: '#F5F5F5',
-    padding: 8,
-    borderRadius: 4,
+    padding: 10,
+    borderRadius: 8,
     marginHorizontal: 4,
   },
   playerCountValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFFFFF',
     marginHorizontal: 8,
   },
   confirmButton: {
@@ -1395,7 +1413,7 @@ const styles = StyleSheet.create({
   },
   timeSlotButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 12,
     marginBottom: 10,
     elevation: 2,
@@ -1406,17 +1424,17 @@ const styles = StyleSheet.create({
   },
   unavailableSlot: {
     backgroundColor: '#E0E0E0',
-    opacity: 0.7,
+    opacity: 0.5,
   },
   unavailableSlotText: {
-    color: '#999999',
+    color: '#1E2329',
   },
   lockedSlot: {
-    backgroundColor: '#FF9800',
-    opacity: 0.7,
+    backgroundColor: '#1E2329',
+    
   },
   lockedSlotText: {
-    color: '#FFFFFF',
+    color: '#FF9800',
   },
   timeSlotListContainer: {
     marginTop: 16,
@@ -1444,7 +1462,7 @@ const styles = StyleSheet.create({
   },
   playerInfoContainer: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    padding: 12,
     borderRadius: 8,
     marginTop: 16,
   },
@@ -1456,7 +1474,7 @@ const styles = StyleSheet.create({
   },
   playerInfoSubheader: {
     fontSize: 14,
-    color: '#666',
+    color: '#E0E0E0',
     marginBottom: 16,
   },
   playerIdContainer: {
@@ -1464,21 +1482,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playerIdLabel: {
-    fontSize: 14,
-    color: '#555',
+    fontSize: 16,
+    color: '#E0E0E0',
     marginRight: 8,
   },
   playerIdValue: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
-    color: '#333',
+    color: '#FFFFFF',
   },
   playerInputContainer: {
-    marginBottom: 12,
+    marginBottom: 8,
   },
   playerInputLabel: {
     fontSize: 14,
-    color: '#555',
+    color: '#E0E0E0',
     marginBottom: 4,
   },
   playerInput: {
@@ -1486,9 +1504,15 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderRadius: 4,
     padding: 8,
-    fontSize: 14,
-    color: '#333',
+    fontSize: 16,
+    color: '#FFFFFF',
+    backgroundColor: '#1E2329',
   },
+  button:{
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+  }
 });
 
 export default Booking;

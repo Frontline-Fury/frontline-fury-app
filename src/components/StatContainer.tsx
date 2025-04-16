@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, ImageSourcePropType } from 'react-native';
 
 // Define the types for our player stats
 interface PlayerStats {
@@ -7,6 +7,18 @@ interface PlayerStats {
   deaths: number;
   wins: number;
   losses: number;
+}
+
+interface StatContainerProps {
+  title: string;
+  stats: PlayerStats;
+}
+interface StatItemProps {
+  label: string;
+  value: string | number;
+  color?: string;
+  icon?: ImageSourcePropType;
+  progress?: number;
 }
 
 // Avatar component that changes based on selected stat
@@ -46,147 +58,130 @@ const PlayerAvatar: React.FC<{
   );
 };
 
-// Main component
-const StatContainer: React.FC = () => {
-  // Sample player stats (these would come from your data source)
-  const [stats, setStats] = useState<PlayerStats>({
-    kills: 250,
-    deaths: 100,
-    wins: 45,
-    losses: 15,
-  });
-
-  // State to track which stat is selected
-  const [selectedStat, setSelectedStat] = useState<'kd' | 'winPercentage' | null>(null);
-
-  // Calculate derived stats
-  const kd = stats.deaths > 0 ? (stats.kills / stats.deaths).toFixed(2) : stats.kills.toString();
-  const winPercentage = stats.wins + stats.losses > 0 
-    ? ((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(1) 
-    : '0';
-
-  // Handler for stat selection
-  const handleStatSelect = (stat: 'kd' | 'winPercentage') => {
-    if (selectedStat === stat) {
-      setSelectedStat(null);
-    } else {
-      setSelectedStat(stat);
-    }
-  };
-
+const StatItem: React.FC<StatItemProps> = ({ label, value, color = '#FFFFFF', icon, progress }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.statsContainer}>
-        {/* Stats display section (hidden details but visible results) */}
-        <View style={styles.statsRow}>
-          <TouchableOpacity 
-            style={[styles.statItem, selectedStat === 'kd' && styles.selectedStat]} 
-            onPress={() => handleStatSelect('kd')}
-          >
-            <Text style={styles.statLabel}>K/D</Text>
-            <Text style={styles.statValue}>{kd}</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.statItem, selectedStat === 'winPercentage' && styles.selectedStat]} 
-            onPress={() => handleStatSelect('winPercentage')}
-          >
-            <Text style={styles.statLabel}>Win %</Text>
-            <Text style={styles.statValue}>{winPercentage}%</Text>
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.statsRowSecondary}>
-          <View style={styles.statItemSecondary}>
-            <Text style={styles.statLabel}>Wins</Text>
-            <Text style={styles.statValue}>{stats.wins}</Text>
-          </View>
-          
-          <View style={styles.statItemSecondary}>
-            <Text style={styles.statLabel}>Losses</Text>
-            <Text style={styles.statValue}>{stats.losses}</Text>
-          </View>
-        </View>
-      </View>
-      
-      {/* Avatar section */}
-      <PlayerAvatar 
-        selectedStat={selectedStat}
-        stats={stats}
-      />
+    <View style={styles.statItemContainer}>
+        <Text style={styles.statLabel}>{label}</Text>
+        {icon && <Image source={icon} style={styles.statIcon} />}
+        {progress !== undefined ? (
+            <View style={styles.progressBarContainer}>
+                <View style={[styles.progressBar, { width: `${progress}%` }]} />
+            </View>
+        ) : (
+            <Text style={[styles.statValue, { color }]}>{value}</Text>
+        )}
     </View>
   );
 };
 
+const StatContainer: React.FC<StatContainerProps> = ({ title, stats }) => {
+    // Calculate derived stats
+    const kd = stats.deaths > 0 ? (stats.kills / stats.deaths).toFixed(2) : stats.kills.toString();
+    const winPercentage = stats.wins + stats.losses > 0
+        ? ((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(1)
+        : '0';
+    const trophyImage: ImageSourcePropType = require('../../assets/Ruby_converted-removebg-preview.png');
+    const targetIcon: ImageSourcePropType = require('../../assets/ff.png');
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.statsRow}>
+                <StatItem
+                    label="K/D"
+                    value={kd}
+                    color="#FF6B35"
+                    icon={targetIcon}
+                />
+                 <StatItem
+                    label="Win %"
+                    value={`${winPercentage}%`}
+                    color="#90EE90"
+                    icon={trophyImage}
+                />
+            </View>
+            <View style={styles.statsRow}>
+                <StatItem label="Wins" value={stats.wins} />
+                <StatItem label="Losses" value={stats.losses} />
+            </View>
+        </View>
+    );
+};
+
 const styles = StyleSheet.create({
-  container: {
-    width:"95%",
-    backgroundColor: '#2A2D3E',
-    borderRadius: 12,
-    padding: 16,
-    margin: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  statsContainer: {
-    marginBottom: 15,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  statsRowSecondary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statItem: {
-    flex: 1,
-    backgroundColor: '#383B4F',
-    padding: 12,
-    borderRadius: 8,
-    marginHorizontal: 5,
-    alignItems: 'center',
-  },
-  statItemSecondary: {
-    flex: 1,
-    padding: 8,
-    marginHorizontal: 5,
-    alignItems: 'center',
-  },
-  selectedStat: {
-    backgroundColor: '#4A63EE',
-  },
-  statLabel: {
-    color: '#B0B3C7',
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  statValue: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  avatar: {
-    width: "70%",
-    height: 150,
-    borderRadius: 0,
-  },
-  trophyOverlay: {
-    position: 'absolute',
-    width: 50,
-    height: 50,
-    bottom: 0,
-    right: 10,
-  },
+    avatarContainer: {
+        position: 'relative',
+        width: 100,
+        height: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    avatar: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 50,
+    },
+    trophyOverlay: {
+        position: 'absolute',
+        width: 40,
+        height: 40,
+        bottom: -5,
+        right: -5,
+    },
+    container: {
+        width: "95%",
+        backgroundColor: '#282E34',
+        borderRadius: 12,
+        padding: 16,
+        margin: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    title: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    statsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 10,
+    },
+    statItemContainer: {
+        alignItems: 'center',
+    },
+    statIcon: {
+        width: 24,
+        height: 24,
+        tintColor:"#FFFFFF",
+        marginVertical: 5,
+    },
+    statLabel: {
+        color: '#E0E0E0',
+        fontSize: 14,
+        marginBottom: 4,
+        textAlign: 'center',
+    },
+    statValue: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    progressBarContainer: {
+        width: '100%',
+        height: 10,
+        backgroundColor: '#3A7CA5',
+        borderRadius: 5,
+        overflow: 'hidden',
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#FF6B35',
+        borderRadius: 5,
+    },
 });
 
 export default StatContainer;

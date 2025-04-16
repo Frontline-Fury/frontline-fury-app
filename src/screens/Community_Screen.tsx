@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet, 
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
   Image,
-  TextInput,
-  FlatList
+  FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
 
 const CommunityScreen = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('Experience');
   
-  // Mock data for different tabs
   const experiencePosts = [
     {
       id: '1',
@@ -174,14 +173,13 @@ const CommunityScreen = () => {
       image: 'https://via.placeholder.com/300x150'
     }
   ];
-  
-  // Render tab content based on active tab
+
   const renderTabContent = () => {
     switch(activeTab) {
       case 'Experience':
         return (
           <View style={styles.tabContent}>
-            <TouchableOpacity style={styles.createPostButton} onPress={() => alert('Create Experience Post')}>
+            <TouchableOpacity style={[styles.card, styles.createPostButton]} onPress={() => alert('Create Experience Post')}>
               <Text style={styles.createPostText}>Share Your Experience</Text>
             </TouchableOpacity>
             
@@ -194,7 +192,6 @@ const CommunityScreen = () => {
                     <Text style={styles.timestamp}>{post.timestamp}</Text>
                   </View>
                 </View>
-                
                 <Text style={styles.postContent}>{post.content}</Text>
                 
                 {post.image && (
@@ -220,7 +217,7 @@ const CommunityScreen = () => {
       case 'Team-Up':
         return (
           <View style={styles.tabContent}>
-            <TouchableOpacity style={styles.createPostButton} onPress={() => alert('Create Team-Up Request')}>
+            <TouchableOpacity style={[styles.card, styles.createPostButton]} onPress={() => alert('Create Team-Up Request')}>
               <Text style={styles.createPostText}>Post Team-Up Request</Text>
             </TouchableOpacity>
             
@@ -303,7 +300,7 @@ const CommunityScreen = () => {
       case 'Tournaments':
         return (
           <View style={styles.tabContent}>
-            <TouchableOpacity style={styles.createPostButton} onPress={() => alert('Create Tournament')}>
+           <TouchableOpacity style={[styles.card, styles.createPostButton]} onPress={() => alert('Create Tournament')}>
               <Text style={styles.createPostText}>Organize Tournament</Text>
             </TouchableOpacity>
             
@@ -353,7 +350,7 @@ const CommunityScreen = () => {
       case 'Celebrations':
         return (
           <View style={styles.tabContent}>
-            <TouchableOpacity style={styles.createPostButton} onPress={() => alert('Share Achievement')}>
+            <TouchableOpacity style={[styles.card, styles.createPostButton]} onPress={() => alert('Share Achievement')}>
               <Text style={styles.createPostText}>Share Your Achievement</Text>
             </TouchableOpacity>
             
@@ -393,6 +390,28 @@ const CommunityScreen = () => {
         return null;
     }
   };
+
+  // Tab options with labels
+  const tabOptions = ['Experience', 'Team-Up', 'Clans', 'Tournaments', 'Celebrations'];
+
+  const renderTabButton = useCallback(({ item }: { item: string }) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.tabButton,
+          activeTab === item && styles.activeTab,
+        ]}
+        onPress={() => setActiveTab(item)}
+      >
+        <Text style={[
+          styles.tabText,
+          activeTab === item && styles.activeTabText,
+        ]}>
+          {item}
+        </Text>
+      </TouchableOpacity>
+    );
+  }, [activeTab]);
   
   return (
     <View style={styles.container}>
@@ -403,41 +422,22 @@ const CommunityScreen = () => {
         </TouchableOpacity>
       </View>
       
-      {/* Tab Navigation */}
+      <View style={{ width: '100%', height: 50 }}>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabsContainer}
+          contentContainerStyle={styles.tabsContent}
+          data={tabOptions}
+          renderItem={renderTabButton}
+          keyExtractor={(item) => item}
+        />
+      </View>
       
-      
-      {/* Tab Content */}
       <ScrollView style={styles.contentContainer}>
         {renderTabContent()}
       </ScrollView>
-
-     <View style={{width: '100%', height: 50}}>
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false} 
-        style={styles.tabsContainer}
-        contentContainerStyle={styles.tabsContent}
-      >
-        {['Experience', 'Team-Up', 'Clans', 'Tournaments', 'Celebrations'].map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            style={[
-              styles.tabButton,
-              activeTab === tab && styles.activeTab,
-            ]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[
-              styles.tabText,
-              activeTab === tab && styles.activeTabText,
-            ]}>
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      </View>
-      {/* Floating Action Button */}
+      
       <TouchableOpacity style={styles.fab} onPress={() => alert('Create New Content')}>
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
@@ -448,7 +448,7 @@ const CommunityScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#1E2329',
   },
   header: {
     flexDirection: 'row',
@@ -456,23 +456,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#282E34',
     elevation: 2,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#fff',
   },
   notificationButton: {
     padding: 5,
   },
   notificationIcon: {
-    fontSize: 20,
+    fontSize: 24,
+    color: '#fff',
   },
   tabsContainer: {
-    backgroundColor: '#ffffff',
-    elevation: 1,
+    backgroundColor: '#282E34',
   },
   tabsContent: {
     paddingHorizontal: 10,
@@ -480,18 +480,19 @@ const styles = StyleSheet.create({
   tabButton: {
     paddingHorizontal: 15,
     marginHorizontal: 5,
+    paddingVertical: 10,
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: '#4a90e2',
+    borderBottomColor: '#FF6B35',
   },
   tabText: {
     fontSize: 14,
-    color: '#888888',
+    color: '#E0E0E0',
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#4a90e2',
+    color: '#FF6B35',
     fontWeight: 'bold',
   },
   contentContainer: {
@@ -499,11 +500,21 @@ const styles = StyleSheet.create({
   },
   tabContent: {
     padding: 15,
-    
+  },
+  card: {
+    backgroundColor: '#282E34',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   createPostButton: {
-    backgroundColor: '#4a90e2',
-    borderRadius: 5,
+    backgroundColor: '#3A7CA5',
+    borderRadius: 12,
     padding: 12,
     alignItems: 'center',
     marginBottom: 15,
@@ -514,22 +525,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   secondaryButton: {
-    backgroundColor: 'white',
+    backgroundColor: '#1E2329',
     borderWidth: 1,
-    borderColor: '#4a90e2',
+    borderColor: '#3A7CA5',
     marginLeft: 10,
   },
   secondaryButtonText: {
-    color: '#4a90e2',
+    color: '#3A7CA5',
     fontWeight: 'bold',
     fontSize: 16,
   },
   postCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#282E34',
     marginBottom: 15,
-    elevation: 1,
+    padding: 15,
+    borderRadius: 12,
   },
   postHeader: {
     flexDirection: 'row',
@@ -545,16 +555,16 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#E0E0E0',
   },
   timestamp: {
     fontSize: 12,
-    color: '#888888',
+    color: '#E0E0E0',
     marginLeft: 'auto',
   },
   postContent: {
     fontSize: 14,
-    color: '#333333',
+    color: '#E0E0E0',
     marginBottom: 10,
     lineHeight: 20,
   },
@@ -567,7 +577,7 @@ const styles = StyleSheet.create({
   postFooter: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: '#3A7CA5',
     paddingTop: 10,
   },
   footerButton: {
@@ -576,23 +586,21 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   footerButtonText: {
-    color: '#555555',
+    color: '#E0E0E0',
     fontSize: 14,
   },
-  
   // Team-Up styles
   teamUpCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#282E34',
     marginBottom: 15,
-    elevation: 1,
+    padding: 15,
+    borderRadius: 12,
   },
   userInfo: {
     flex: 1,
   },
   rankContainer: {
-    backgroundColor: '#e8f0fe',
+    backgroundColor: '#3A7CA5',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -600,12 +608,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   rankText: {
-    color: '#4a90e2',
+    color: '#fff',
     fontSize: 12,
     fontWeight: 'bold',
   },
   teamDetails: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#1E2329',
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
@@ -617,16 +625,16 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontWeight: 'bold',
     width: 80,
-    color: '#555555',
+    color: '#E0E0E0',
     fontSize: 13,
   },
   detailValue: {
     flex: 1,
-    color: '#333333',
+    color: '#E0E0E0',
     fontSize: 13,
   },
   contactButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A7CA5',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
@@ -637,7 +645,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  
   // Clans styles
   clanButtons: {
     flexDirection: 'row',
@@ -645,11 +652,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   clanCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#282E34',
     marginBottom: 15,
-    elevation: 1,
+    padding: 15,
+    borderRadius: 12,
   },
   clanHeader: {
     flexDirection: 'row',
@@ -665,20 +671,20 @@ const styles = StyleSheet.create({
   clanName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#E0E0E0',
   },
   clanMembers: {
     fontSize: 12,
-    color: '#888888',
+    color: '#888',
   },
   clanDescription: {
     fontSize: 14,
-    color: '#333333',
+    color: '#E0E0E0',
     marginBottom: 10,
     lineHeight: 20,
   },
   clanRequirements: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#1E2329',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -686,47 +692,45 @@ const styles = StyleSheet.create({
   requirementsLabel: {
     fontWeight: 'bold',
     fontSize: 13,
-    color: '#555555',
+    color: '#E0E0E0',
     marginBottom: 2,
   },
   requirementsText: {
     fontSize: 13,
-    color: '#333333',
+    color: '#E0E0E0',
   },
   clanButtonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   clanActionButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
+    backgroundColor: '#1E2329',
+    borderRadius: 12,
     padding: 10,
     alignItems: 'center',
     flex: 1,
     marginRight: 10,
   },
   clanActionButtonText: {
-    color: '#555555',
+    color: '#E0E0E0',
     fontWeight: 'bold',
     fontSize: 14,
   },
   joinButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A7CA5',
     marginRight: 0,
   },
   joinButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 14,
   },
-  
   // Tournaments styles
   tournamentCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
+    backgroundColor: '#282E34',
     marginBottom: 15,
-    elevation: 1,
     overflow: 'hidden',
+    borderRadius: 12,
   },
   tournamentBanner: {
     width: '100%',
@@ -738,11 +742,11 @@ const styles = StyleSheet.create({
   tournamentName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#E0E0E0',
     marginBottom: 10,
   },
   tournamentDetails: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#1E2329',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -753,7 +757,7 @@ const styles = StyleSheet.create({
   },
   tournamentDescription: {
     fontSize: 14,
-    color: '#333333',
+    color: '#E0E0E0',
     marginBottom: 10,
     lineHeight: 20,
   },
@@ -762,7 +766,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tournamentButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#1E2329',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
@@ -770,12 +774,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   tournamentButtonText: {
-    color: '#555555',
+    color: '#E0E0E0',
     fontWeight: 'bold',
     fontSize: 14,
   },
   registerButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A7CA5',
     marginRight: 0,
   },
   registerButtonText: {
@@ -783,17 +787,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  
   // Celebrations styles
   celebrationCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#282E34',
     marginBottom: 15,
-    elevation: 1,
+    padding: 15,
+    borderRadius: 12,
   },
   achievementBadge: {
-    backgroundColor: '#ffe8cc',
+    backgroundColor: '#3A7CA5',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -801,13 +803,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   achievementText: {
-    color: '#ff8a00',
+    color: '#fff',
     fontSize: 12,
     fontWeight: 'bold',
   },
   celebrationContent: {
     fontSize: 14,
-    color: '#333333',
+    color: '#E0E0E0',
     marginVertical: 10,
     lineHeight: 20,
   },
@@ -820,7 +822,7 @@ const styles = StyleSheet.create({
   celebrationFooter: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: '#3A7CA5',
     paddingTop: 10,
   },
   congratsButton: {
@@ -829,7 +831,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginRight: 10,
     backgroundColor: '#fff5e6',
-    borderRadius: 5,
+    borderRadius: 12,
   },
   congratsButtonText: {
     color: '#ff8a00',
@@ -847,13 +849,12 @@ const styles = StyleSheet.create({
     color: '#555555',
     fontSize: 14,
   },
-  
   // Floating Action Button
   fab: {
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A7CA5',
     width: 56,
     height: 56,
     borderRadius: 28,

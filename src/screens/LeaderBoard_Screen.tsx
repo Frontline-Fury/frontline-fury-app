@@ -1,117 +1,134 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const LeaderBoard = () => {
-  const [activeTab, setActiveTab] = useState('Today');
-  
-  
-  const topPlayers = [
-    { id: 2, name: 'Tarun', score: 155, avatar: 'https://robohash.org/Tarun', color: '#4b96dc'},  // Blue (2nd)
-    { id: 1, name: 'Karan', score: 175, avatar: 'https://robohash.org/Karan', color: '#e55a76'}, // Red (1st)
-    { id: 3, name: 'Divyansh', score: 130, avatar: 'https://robohash.org/Divyansh', color: '#78c26d'}, // Green (3rd)
-  ];
-  
-  const allPlayers = [
-    { id: 4, name: 'Atul', score: 123, rank: 4, avatar: 'https://robohash.org/atul'},
-    { id: 5, name: 'Rajat', score: 120, rank: 5, avatar: 'https://robohash.org/rajat'},
-    { id: 6, name: 'Anmol', score: 112, rank: 6, avatar: 'https://robohash.org/anmol'},
-    { id: 7, name: 'Shouray', score: 109, rank: 7, avatar: 'https://robohash.org/shouray'},
-    { id: 8, name: 'Abhi', score: 100, rank: 8, avatar: 'https://robohash.org/abhi'},
-    { id: 9, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 10, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 11, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 12, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 13, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 14, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-    { id: 15, name: 'Princ', score: 95, rank: 9, avatar: 'https://robohash.org/princ'},
-  ];
-  
-  const renderTopThree = () => {
-    // Arrange in order: 2nd (blue), 1st (red), 3rd (green)
-    const ordered = [
-      topPlayers.find(p => p.id === 2), // Second place - blue
-      topPlayers.find(p => p.id === 1), // First place - red
-      topPlayers.find(p => p.id === 3), // Third place - green
-    ];
-    
+// Screen dimensions
+const { width } = Dimensions.get('window');
+
+// Mock data for players with more realistic scores and images
+const players = [
+  { id: '1', name: 'S2AT', score: 1500, rank: 1, image: require('../../assets/a1.jpeg') },
+  { id: '2', name: 'Alice', score: 1450, rank: 2, image: require('../../assets/a2.jpeg') },
+  { id: '3', name: 'Bob', score: 1400, rank: 3, image: require('../../assets/a3.jpeg') },
+  { id: '4', name: 'Charlie', score: 1350, rank: 4, image: require('../../assets/a2.jpeg') },
+  { id: '5', name: 'David', score: 1300, rank: 5, image: require('../../assets/a2.jpeg') },
+  { id: '6', name: 'Eve', score: 1250, rank: 6, image: require('../../assets/a2.jpeg') },
+  { id: '7', name: 'Frank', score: 1200, rank: 7, image: require('../../assets/a2.jpeg') },
+  { id: '8', name: 'Grace', score: 1150, rank: 8, image: require('../../assets/a2.jpeg') },
+  { id: '9', name: 'Hannah', score: 1100, rank: 9, image: require('../../assets/a2.jpeg') },
+  { id: '10', name: 'Isaac', score: 1050, rank: 10, image: require('../../assets/a2.jpeg') },
+  { id: '11', name: 'Jack', score: 1000, rank: 11, image: require('../../assets/a2.jpeg') },
+  { id: '12', name: 'Katie', score: 950, rank: 12, image: require('../../assets/a2.jpeg') },
+];
+
+// Define types for players
+type Player = {
+  id: string;
+  name: string;
+  score: number;
+  rank: number;
+  image: any;
+};
+
+const LeaderBoardScreen: React.FC = () => {
+  // State for active tab
+  const [activeTab, setActiveTab] = useState<'Overall' | 'Weekly'>('Overall');
+
+  // Header Component with Gradient
+  const HeaderComponent = useCallback(() => (
+    <LinearGradient
+      colors={['#0A3D62', '#3A7CA5']}
+      style={styles.headerContainer}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <View style={styles.headerContent}>
+        <Image
+          source={require('../../assets/ff.png')}
+          style={styles.headerLogo}
+        />
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitlePrimary}>FrontlineFury</Text>
+        </View>
+      </View>
+    </LinearGradient>
+  ), []);
+
+  // Render Top 3 Players
+  const renderTopPlayers = useCallback(() => {
+    const topPlayers = players.slice(0, 3);
+
     return (
       <View style={styles.topPlayersContainer}>
-        {ordered.map((player, index) => {
-          const position = index === 0 ? 2 : index === 1 ? 1 : 3;
-          
-          return (
-            <View 
-              key={player?.id ?? index} 
-              style={[
-                styles.topPlayerCard,
-                { backgroundColor: player?.color ?? '#gray' }
-              ]}
-            >
-              <Image 
-                source={{ uri: player?.avatar ?? 'https://via.placeholder.com/40' }} 
-                style={styles.topAvatar} 
-                resizeMode="cover"
-              />
-
-              
-              
-              <View style={[
-                styles.medalContainer,
-              ]}>
-                
-                <Text style={styles.medalText}>{position}</Text>
+        {topPlayers.map((player) => (
+          <View key={player.id} style={styles.topPlayerCard}>
+            <Image source={player.image} style={styles.topPlayerImage} />
+            <View style={styles.topPlayerDetails}>
+              <Text style={styles.topPlayerName}>{player.name}</Text>
+              <Text style={styles.topPlayerScore}>Score: {player.score}</Text>
+              <View style={styles.rankBadge}>
+                <Text style={styles.rankText}>{player.rank}</Text>
               </View>
-              <Text style={styles.topPlayerName}>{player?.name}</Text>
-            </View>
-          );
-        })}
-      </View>
-    );
-  };
-  
-  return (
-    <View style={styles.container}>
-      {/* Top 3 Players */}
-      {renderTopThree()}
-      
-      {/* Tab selection */}
-      <View style={styles.tabContainer}>
-        {['Today', 'This week', 'This month'].map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            style={[
-              styles.tabButton,
-              activeTab === tab && styles.activeTab,
-            ]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[
-              styles.tabText,
-              activeTab === tab && styles.activeTabText,
-            ]}>
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      
-      {/* List of all players */}
-      <ScrollView style={styles.scrollView}>
-        {allPlayers.map((player) => (
-          <View key={player.id} style={styles.playerRow}>
-            <View style={styles.playerInfo}>
-              <Image source={{ uri: player.avatar }} style={styles.avatar} />
-              <View>
-                <Text style={styles.playerName}>{player.name}</Text>
-                <Text style={styles.playerScore}>{player.score} Points</Text>
-              </View>
-            </View>
-            <View style={styles.rankContainer}>
-              <Text style={styles.rankText}>{player.rank}<Text style={styles.rankSuffix}>th</Text></Text>
             </View>
           </View>
         ))}
-      </ScrollView>
+      </View>
+    );
+  }, []);
+
+  // Render Other Players
+  const renderPlayerItem = useCallback(({ item }: { item: Player }) => (
+    <View style={styles.playerCard}>
+      <View style={styles.playerInfo}>
+        <Text style={styles.playerRank}>{item.rank}</Text>
+        <Image source={item.image} style={styles.playerImage} />
+        <Text style={styles.playerName}>{item.name}</Text>
+      </View>
+      <Text style={styles.playerScore}>{item.score}</Text>
+    </View>
+  ), []);
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        ListHeaderComponent={
+          <View>
+            {HeaderComponent()}
+            <View style={styles.tabsContainer}>
+              {['Overall', 'Weekly'].map((tab) => (
+                <TouchableOpacity
+                  key={tab}
+                  style={[
+                    styles.tabButton,
+                    activeTab === tab && styles.activeTab,
+                  ]}
+                  onPress={() => setActiveTab(tab as 'Overall' | 'Weekly')}
+                >
+                  <Text style={[
+                    styles.tabText,
+                    activeTab === tab && styles.activeTabText,
+                  ]}>
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {renderTopPlayers()}
+          </View>
+        }
+        data={players.slice(3)}
+        renderItem={renderPlayerItem}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponentStyle={styles.listHeader}
+      />
     </View>
   );
 };
@@ -119,127 +136,156 @@ const LeaderBoard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0b1526',
-    paddingTop: 20,
+    backgroundColor: '#1E2329',
   },
-  topPlayersContainer: {
+  headerContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerContent: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  topPlayerCard: {
-    borderRadius: 15,
+  headerLogo: {
     width: 80,
     height: 80,
-    margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 5,
-    borderWidth: 2,
-    borderColor: '#1c2d49',
+    resizeMode: 'contain',
   },
-  topAvatar: {
-    marginTop: 45,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  headerTitleContainer: {
+    alignItems: 'flex-end',
   },
-  topPlayerName: {
-    fontSize: 12,
-    paddingTop: 40,
-    color: '#ffffff',
+  headerTitlePrimary: {
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
+    color: '#FFFFFF',
   },
-  medalContainer: {
-    position: 'absolute',
-    bottom: -15,
-    backgroundColor: '#eaeaea',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#1c2d49',
+  listHeader: {
+    backgroundColor: '#1E2329',
+    paddingHorizontal: 10,
   },
-  medalText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  tabContainer: {
+  tabsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    justifyContent: 'center',
+    marginVertical: 15,
+    backgroundColor: '#3A7CA5',
+    borderRadius: 25,
+    padding: 5,
   },
   tabButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 5,
+    borderRadius: 20,
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#ffffff',
+    backgroundColor: '#FF6B35',
   },
   tabText: {
     fontSize: 16,
-    color: '#7a8496',
+    color: '#E0E0E0',
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#ffffff',
-    fontWeight: '600',
+    color: 'white',
+    fontWeight: 'bold',
   },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: 20,
+  topPlayersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 10,
+    paddingHorizontal: 10,
   },
-  playerRow: {
+  topPlayerCard: {
+    alignItems: 'center',
+    backgroundColor: '#1E2329',
+    borderRadius: 12,
+    padding: 10,
+    width: width / 3.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  topPlayerImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 5,
+  },
+  topPlayerDetails: {
+    alignItems: 'center',
+  },
+  topPlayerName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  topPlayerScore: {
+    fontSize: 14,
+    color: '#E0E0E0',
+  },
+  playerCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    backgroundColor: '#1c2d49',
-    borderRadius: 15,
-    marginBottom: 10,
-    paddingHorizontal: 15,
+    backgroundColor: '#1E2329',
+    borderRadius: 12,
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   playerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  avatar: {
+  playerRank: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#E0E0E0',
+    marginRight: 10,
+  },
+  playerImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 15,
+    marginRight: 10,
   },
   playerName: {
     fontSize: 16,
-    color: '#ffffff',
-    fontWeight: '600',
+    color: '#FFFFFF',
   },
   playerScore: {
-    fontSize: 14,
-    color: '#8294aa',
+    fontSize: 16,
+    color: '#E0E0E0',
   },
-  rankContainer: {
-    alignItems: 'flex-end',
+  rankBadge: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 15,
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: -10,
+    right: 5,
   },
   rankText: {
-    fontSize: 20,
-    color: '#3cf36f',
+    color: 'white',
     fontWeight: 'bold',
-  },
-  rankSuffix: {
     fontSize: 12,
-    color: '#3cf36f',
-    fontWeight: 'normal',
-    top: -5,
   },
 });
 
-export default LeaderBoard;
+export default LeaderBoardScreen;

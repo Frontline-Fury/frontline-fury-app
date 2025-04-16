@@ -117,7 +117,15 @@ const PlayerProfileScreen: React.FC<PlayerProfileScreenProps> = ({ navigation })
 
                 </View>
                 <View style={{ flex: 1, width: "100%", height: "50%", borderColor: "#000", borderWidth: 1 }}>
-                  <StatContainer />
+                  <StatContainer 
+                    title="Player Statistics"
+                    stats={{
+                      kills: 0,
+                      deaths: 0,
+                      wins: 0,
+                      losses: 0
+                    }}
+                  />
                 </View>
               </View>
             </View>
