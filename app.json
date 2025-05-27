@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "MyProject",
+    "slug": "MyProject",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/ff.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/ff.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/ff.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "com.frontlinefury.MyProject"
+    },
+    "web": {
+      "favicon": "./assets/ff.png"
+    },
+    "plugins": [
+      "expo-barcode-scanner",
+      "react-native-vision-camera"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "017f3297-9e2a-49d5-be1a-c1b8415cf1b2"
+      }
+    }
+  }
+}
