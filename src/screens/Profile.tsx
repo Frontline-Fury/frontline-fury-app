@@ -11,7 +11,11 @@ const menuItems = [
   { title: "Achievements", icon: "emoji-events", screen: "Achievements" },
   { title: "Connection", icon: "people", screen: "Connection" },
   { title: "Market", icon: "shopping-bag", screen: "Market" },
+<<<<<<< HEAD
   { title: "Clans", icon: "military-tech", screen: "Clans" },
+=======
+  { title: "Battlion", icon: "military-tech", screen: "BattalionScreen" },
+>>>>>>> ee91dd5 (Fix Broken link)
   { title: "Share App", icon: "share", screen: "ShareApp" },
   { title: "Rate us", icon: "star", screen: "RateUs" },
   { title: "Support", icon: "support-agent", screen: "Support" },

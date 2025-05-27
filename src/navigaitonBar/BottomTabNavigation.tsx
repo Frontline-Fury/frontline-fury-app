@@ -20,9 +20,17 @@ import MatchesScreen from "../screens/profileScreen/Matches";
 import AchievementsScreen from "../screens/profileScreen/Achivements";
 import ConnectionScreen from "../screens/profileScreen/Connection";
 import MarketScreen from "../screens/profileScreen/Market";
+<<<<<<< HEAD
 import ClansScreen from "../screens/profileScreen/Clans";
 import SupportScreen from "../screens/profileScreen/Support";
 import PlayerProfileScreen from "../screens/PlayerProfile";
+=======
+
+
+import SupportScreen from "../screens/profileScreen/Support";
+import PlayerProfileScreen from "../screens/PlayerProfile";
+import { BattalionScreen } from "../screens/profileScreen/BattalionScreen";
+>>>>>>> ee91dd5 (Fix Broken link)
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -37,7 +45,11 @@ export type RootStackParamList = {
   Achievements: undefined;
   Connection: undefined;
   Market: undefined;
+<<<<<<< HEAD
   Clans: undefined;
+=======
+  BattalionScreen: undefined;
+>>>>>>> ee91dd5 (Fix Broken link)
   ShareApp: undefined;
   RateUs: undefined;
   Support: undefined;
@@ -50,7 +62,11 @@ const CustomHeader = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   return (
+<<<<<<< HEAD
     <View style={{ flexDirection:"row", alignSelf:"stretch", alignItems: "center", justifyContent: "space-between", width:340  }}>
+=======
+    <View style={{ flexDirection:"row", alignSelf:"stretch", alignItems: "center", justifyContent: "space-between", width:340}}>
+>>>>>>> ee91dd5 (Fix Broken link)
       <View>
         <Image source={require("../../assets/frontlinefury.png")} style={{ width: 120, height: 30, resizeMode: "contain" }} />
       </View>
@@ -118,7 +134,11 @@ const MainNavigator = () => {
       <Stack.Screen name="Achievements" component={AchievementsScreen} />
       <Stack.Screen name="Connection" component={ConnectionScreen} />
       <Stack.Screen name="Market" component={MarketScreen} />
+<<<<<<< HEAD
       <Stack.Screen name="Clans" component={ClansScreen} />
+=======
+      <Stack.Screen name="BattalionScreen" component={BattalionScreen} />
+>>>>>>> ee91dd5 (Fix Broken link)
       <Stack.Screen name="Support" component={SupportScreen} />
     </Stack.Navigator>
   );
