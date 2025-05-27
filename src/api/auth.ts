@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // src/api/auth.ts
 import axios from "axios";
 
@@ -38,7 +38,7 @@ export const loginUser = async (userData: LoginPayload): Promise<any> => {
     throw error;
   }
 };
-=======
+
 // src/api/auth.ts
 import axios from "axios";
 
@@ -78,4 +78,4 @@ export const loginUser = async (userData: LoginPayload): Promise<any> => {
     throw error;
   }
 };
->>>>>>> ee91dd5 (Fix Broken link)
+

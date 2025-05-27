@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -137,6 +138,8 @@ const PlayerProfileScreen: React.FC<PlayerProfileScreenProps> = ({ navigation })
   );
 }
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 // PlayerProfileScreen.tsx
 import React from 'react';
 import {
@@ -402,11 +405,15 @@ const PlayerProfileScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
+<<<<<<< HEAD
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
     backgroundColor: '#f5f5f5',
   },
@@ -575,6 +582,8 @@ const styles = StyleSheet.create({
 
 export default PlayerProfileScreen;
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
     backgroundColor: '#121212',
   },
   scrollView: {
@@ -944,5 +953,9 @@ export default PlayerProfileScreen;
   },
 });
 
+<<<<<<< HEAD
 export default PlayerProfileScreen;
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+export default PlayerProfileScreen;
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc

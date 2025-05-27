@@ -12,10 +12,14 @@ const menuItems = [
   { title: "Connection", icon: "people", screen: "Connection" },
   { title: "Market", icon: "shopping-bag", screen: "Market" },
 <<<<<<< HEAD
+<<<<<<< HEAD
   { title: "Clans", icon: "military-tech", screen: "Clans" },
 =======
   { title: "Battlion", icon: "military-tech", screen: "BattalionScreen" },
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+  { title: "Battlion", icon: "military-tech", screen: "BattalionScreen" },
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
   { title: "Share App", icon: "share", screen: "ShareApp" },
   { title: "Rate us", icon: "star", screen: "RateUs" },
   { title: "Support", icon: "support-agent", screen: "Support" },

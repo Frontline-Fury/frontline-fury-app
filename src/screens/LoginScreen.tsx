@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // src/screens/LoginScreen.tsx
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
@@ -86,6 +87,8 @@ export default function LoginScreen({ navigation }: Props) {
   );
 }
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 // src/screens/LoginScreen.tsx
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
@@ -172,4 +175,7 @@ export default function LoginScreen({ navigation }: Props) {
     </View>
   );
 }
+<<<<<<< HEAD
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc

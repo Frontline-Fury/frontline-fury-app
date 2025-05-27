@@ -20,10 +20,14 @@ interface Product {
   name: string;
   price: number;
 <<<<<<< HEAD
+<<<<<<< HEAD
   image: any; // Image source
 =======
   image: any; 
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+  image: any; 
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
   category: string;
   description: string;
   inStock: boolean;
@@ -36,10 +40,14 @@ type CategoryOption = 'all' | 'merch' | 'gear' | 'collectibles';
 
 const MarketScreen: React.FC = () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Sample product data - replace with your actual products
 =======
   // Sample product data 
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+  // Sample product data 
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
   const [products, setProducts] = useState<Product[]>([
     {
       id: '1',
@@ -66,10 +74,14 @@ const MarketScreen: React.FC = () => {
       name: 'Character Figurine',
       price: 39.99,
 <<<<<<< HEAD
+<<<<<<< HEAD
       image: require('../../../assets/Guvpev-Jujutsu-Kaisen-Figure-5-6-Sitting-Gojo-Satoru-Geto-Suguru-Anime-Figures-PVC-Model-Statue-Jujutsu-Kaisen-Collectible-Figures-JJK-Figure-Toys-De_ccacdf82-f42f-46d8-9399-d0e59fd6cf5d.3278186eae019b4a35711ea12c56d0.webp'),
 =======
       image: require('../../../assets/a.webp'),
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+      image: require('../../../assets/a.webp'),
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
       category: 'collectibles',
       description: 'Limited edition collectible figurine of the main character.',
       inStock: false,

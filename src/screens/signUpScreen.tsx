@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // src/screens/SignUpScreen.tsx
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
@@ -93,6 +94,8 @@ export default function SignUpScreen({ navigation }: Props) {
   );
 }
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 // src/screens/SignUpScreen.tsx
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
@@ -186,4 +189,7 @@ export default function SignUpScreen({ navigation }: Props) {
     </View>
   );
 }
+<<<<<<< HEAD
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc

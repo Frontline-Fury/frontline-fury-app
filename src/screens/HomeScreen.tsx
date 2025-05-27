@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState, useCallback } from 'react';
 import { 
   View, 
@@ -501,6 +502,8 @@ const styles = StyleSheet.create({
 });
 
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 import React, { useState, useCallback } from 'react';
 import { 
   View, 
@@ -1004,5 +1007,8 @@ const styles = StyleSheet.create({
   },
 });
 
+<<<<<<< HEAD
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 export default HomeScreen;

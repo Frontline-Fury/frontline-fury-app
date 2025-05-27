@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { StyleSheet } from "react-native";
 
 const globalStyles = StyleSheet.create({
@@ -61,6 +62,8 @@ const globalStyles = StyleSheet.create({
 
 export default globalStyles;
 =======
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 import { StyleSheet } from "react-native";
 
 const globalStyles = StyleSheet.create({
@@ -122,4 +125,7 @@ const globalStyles = StyleSheet.create({
 });
 
 export default globalStyles;
+<<<<<<< HEAD
 >>>>>>> ee91dd5 (Fix Broken link)
+=======
+>>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
