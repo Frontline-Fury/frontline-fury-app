@@ -1,145 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../main/types';
-import DropDownPicker from 'react-native-dropdown-picker';
-import StatContainer from "../components/StatContainer";
 
-
-type PlayerProfileScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'PlayerProfile'>;
-};
-
-const PlayerProfileScreen: React.FC<PlayerProfileScreenProps> = ({ navigation }) => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: 'TDM', value: 'Team Death Match' },
-    { label: 'CTF', value: 'Capture The Flag' },
-    { label: 'SPIKE', value: 'Spike Rush' },
-  ]);
-
-  const [activeTab, setActiveTab] = useState('All');
-
-  return (
-    <View style={styles.container}>
-
-      {/* Custom Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>← Player Profile</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Player Name Tag */}
-      <View style={styles.nameTag}>
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>S2AT</Text>
-          <Text style={{ fontSize: 16, color: '#777' }}>#6969</Text>
-        </View>
-        <View style={{ alignItems: 'center' }}>
-          <Image
-            source={require('../../assets/Ruby_converted-removebg-preview.png')}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-          />
-          <Text style={{ fontSize: 12, color: '#777' }}>Ruby I</Text>
-        </View>
-      </View>
-      <View style={{ flex: 1 }}>
-        <FlatList
-          style={{ height: 102000 }}
-          data={[{}]} // Dummy data to render the component once
-          keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 500 }} // Increases scrollable height
-          renderItem={() => (
-            <View>
-              {/* Your Stats Container and other contents */}
-              <View style={styles.statsContainer}>
-                <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  placeholder="All"
-                  style={styles.dropdown}
-                  dropDownContainerStyle={styles.dropdownContainer}
-                />
-
-                {/* Tabs for Filtering */}
-                <View style={styles.tabsContainer}>
-                  {['All', 'Ranked', 'Casual'].map((tab) => (
-                    <TouchableOpacity
-                      key={tab}
-                      style={[
-                        styles.tabButton,
-                        activeTab === tab && styles.activeTab
-                      ]}
-                      onPress={() => setActiveTab(tab)}
-                    >
-                      <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
-                        {tab}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                {/* Common Stats */}
-                <View style={styles.CommonStats}>
-                  <View style={styles.cont1}>
-                    <View style={styles.cont1A}>
-                      <Text style={styles.statstext}>Win</Text>
-                    </View>
-                    <View style={styles.cont1B}>
-                      <Text style={styles.statstext}>Top Ten's</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.cont2}>
-                    <View style={styles.cont2A}>
-                      <Text style={styles.statstext}>Win%</Text>
-                    </View>
-                    <View style={styles.cont2B}>
-                      <Text style={styles.statstext}>Games played</Text>
-                      <Text style={styles.statstext1}>K/D</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.cont3}>
-                    <View style={styles.cont3A}>
-                      <Text style={styles.statstext}>Kil</Text>
-                    </View>
-                    <View style={styles.cont3B}>
-                      <Text style={styles.statstext}>Best Rank</Text>
-                    </View>
-                  </View>
-
-
-                </View>
-                <View style={{ flex: 1, width: "100%", height: "50%", borderColor: "#000", borderWidth: 1 }}>
-                  <StatContainer 
-                    title="Player Statistics"
-                    stats={{
-                      kills: 0,
-                      deaths: 0,
-                      wins: 0,
-                      losses: 0
-                    }}
-                  />
-                </View>
-              </View>
-            </View>
-          )}
-        />
-      </View>
-    </View>
-  );
-}
-=======
-=======
->>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
 // PlayerProfileScreen.tsx
 import React from 'react';
 import {
@@ -405,16 +264,12 @@ const PlayerProfileScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-<<<<<<< HEAD
->>>>>>> ee91dd5 (Fix Broken link)
-=======
->>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     backgroundColor: '#f5f5f5',
   },
   header: {
@@ -577,258 +432,245 @@ const styles = StyleSheet.create({
     fontFamily: 'popins',
     fontWeight: 'bold',
   },
-
-});
-
-export default PlayerProfileScreen;
-=======
-=======
->>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc
-    backgroundColor: '#121212',
-  },
   scrollView: {
     flex: 1,
   },
   headerContainer: {
-    padding: 20,
+    padding: 16,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    alignItems: 'center',
   },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 16,
   },
   profileImageContainer: {
     position: 'relative',
-    marginRight: 15,
+    marginRight: 16,
   },
   profileImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    borderWidth: 3,
-    borderColor: '#3a7ca5',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   levelBadge: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#d9534f',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#121212',
+    bottom: -10,
+    right: -10,
+    backgroundColor: '#FF6600',
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   levelText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
   },
   profileInfo: {
     flex: 1,
   },
   username: {
-    color: '#fff',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 2,
+    color: '#fff',
   },
   realName: {
-    color: '#ccc',
     fontSize: 16,
-    marginBottom: 6,
+    color: '#ccc',
   },
   teamContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginTop: 4,
   },
   teamText: {
-    color: '#ddd',
-    marginLeft: 5,
+    marginLeft: 4,
+    color: '#3a7ca5',
     fontSize: 14,
   },
   rankContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 4,
   },
   rankText: {
+    marginLeft: 4,
     color: '#f0ad4e',
-    marginLeft: 5,
     fontSize: 14,
-    fontWeight: '500',
   },
   xpContainer: {
-    marginTop: 20,
+    width: '100%',
+    marginTop: 16,
+    alignItems: 'center',
   },
   xpProgressBar: {
-    height: 12,
-    backgroundColor: '#555',
-    borderRadius: 6,
+    width: '90%',
+    height: 8,
+    backgroundColor: '#ddd',
+    borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 5,
   },
   xpFill: {
     height: '100%',
-    backgroundColor: '#5cb85c',
-    borderRadius: 6,
+    backgroundColor: '#FF6600',
   },
   xpText: {
-    color: '#ccc',
-    fontSize: 12,
-    textAlign: 'right',
-  },
-  statsContainer: {
-    padding: 15,
-    marginTop: 10,
-  },
-  sectionTitle: {
+    marginTop: 4,
     color: '#fff',
+    fontSize: 14,
+  },
+  
+  sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 12,
+    color: '#333',
   },
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
   },
   statItem: {
-    width: '48%',
-    backgroundColor: '#2a2a2a',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 10,
+    flex: 1,
     alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    marginHorizontal: 4,
   },
   statValue: {
-    color: '#fff',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#333',
   },
   statLabel: {
-    color: '#aaa',
     fontSize: 14,
+    color: '#666',
   },
   loadoutsContainer: {
-    padding: 15,
-    marginTop: 5,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   sectionButton: {
-    padding: 6,
+    backgroundColor: '#FF6600',
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: '#3a7ca5',
-    borderRadius: 5,
+    borderRadius: 4,
   },
   sectionButtonText: {
     color: '#fff',
     fontSize: 14,
+    fontWeight: 'bold',
   },
   loadoutCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 12,
-    borderLeftWidth: 0,
-    borderLeftColor: 'transparent',
+    position: 'relative',
   },
   activeLoadout: {
-    borderLeftWidth: 5,
-    borderLeftColor: '#5cb85c',
+    borderColor: '#FF6600',
+    borderWidth: 2,
   },
   loadoutHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   loadoutName: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    color: '#333',
   },
   activeTag: {
-    backgroundColor: '#5cb85c',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: '#FF6600',
     borderRadius: 4,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
   activeTagText: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
   },
   loadoutDetails: {
-    marginTop: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   weaponItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
   },
   weaponText: {
-    color: '#ddd',
     marginLeft: 8,
     fontSize: 14,
+    color: '#333',
   },
   battlePassContainer: {
-    padding: 15,
-    marginTop: 5,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   progressContainer: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
   progressBar: {
-    height: 12,
-    backgroundColor: '#555',
-    borderRadius: 6,
+    height: 8,
+    backgroundColor: '#ddd',
+    borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 5,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#f0ad4e',
-    borderRadius: 6,
+    backgroundColor: '#FF6600',
   },
   progressText: {
-    color: '#ccc',
-    fontSize: 12,
-    textAlign: 'right',
+    marginTop: 4,
+    color: '#333',
+    fontSize: 14,
   },
   rewardsContainer: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    padding: 15,
+    marginTop: 12,
   },
   rewardsTitle: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#333',
   },
   rewardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   rewardText: {
-    color: '#ddd',
     marginLeft: 8,
     fontSize: 14,
+    color: '#333',
   },
   badgesContainer: {
-    padding: 15,
-    marginTop: 5,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   badgesGrid: {
     flexDirection: 'row',
@@ -836,126 +678,129 @@ export default PlayerProfileScreen;
     justifyContent: 'space-between',
   },
   badgeItem: {
-    width: '23%',
+    width: '48%',
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
     alignItems: 'center',
-    marginBottom: 15,
   },
   badgeIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#2a2a2a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
     position: 'relative',
+    marginBottom: 8,
   },
   badgeCount: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#d9534f',
-    width: 20,
-    height: 20,
+    top: -5,
+    right: -5,
+    backgroundColor: '#FF6600',
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#121212',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
   },
   badgeCountText: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
   },
   badgeName: {
-    color: '#ddd',
-    fontSize: 12,
+    fontSize: 14,
+    color: '#333',
     textAlign: 'center',
   },
   eventsContainer: {
-    padding: 15,
-    marginTop: 5,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
   eventCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    marginBottom: 12,
   },
   eventName: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
+    fontWeight: 'bold',
+    color: '#333',
   },
   eventDetails: {
-    color: '#ccc',
-    fontSize: 13,
-    marginBottom: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
+    fontSize: 14,
+    color: '#666',
   },
   registerButton: {
-    backgroundColor: '#3a7ca5',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 5,
+    backgroundColor: '#FF6600',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 4,
   },
   registeredButton: {
-    backgroundColor: '#5cb85c',
+    backgroundColor: '#28a745',
   },
   registerText: {
     color: '#fff',
-    fontWeight: '600',
     fontSize: 14,
+    fontWeight: 'bold',
   },
   currencyContainer: {
-    padding: 15,
-    marginTop: 5,
-    marginBottom: 15,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   currencyBox: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
   },
   currencyLabel: {
-    color: '#ccc',
     fontSize: 14,
-    marginLeft: 10,
+    color: '#666',
+    marginLeft: 8,
   },
   currencyValue: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
+    color: '#333',
+    marginLeft: 8,
   },
   getMoreButton: {
-    backgroundColor: '#f0ad4e',
-    paddingHorizontal: 12,
+    backgroundColor: '#FF6600',
     paddingVertical: 6,
-    borderRadius: 5,
-    marginLeft: 'auto',
+    paddingHorizontal: 12,
+    borderRadius: 4,
   },
   getMoreText: {
-    color: '#333',
-    fontWeight: '600',
+    color: '#fff',
     fontSize: 14,
+    fontWeight: 'bold',
   },
   footer: {
-    height: 20,
+    height: 100,
+    backgroundColor: '#f5f5f5',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  footerText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  footerLink: {
+    color: '#FF6600',
+    fontWeight: 'bold',
+  },
+
+
 });
 
-<<<<<<< HEAD
 export default PlayerProfileScreen;
->>>>>>> ee91dd5 (Fix Broken link)
-=======
-export default PlayerProfileScreen;
->>>>>>> ee91dd547d884418874abdcae5f8b70d4cf4ccdc

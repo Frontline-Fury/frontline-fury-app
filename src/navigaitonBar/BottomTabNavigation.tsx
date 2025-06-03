@@ -22,13 +22,8 @@ import ConnectionScreen from "../screens/profileScreen/Connection";
 import MarketScreen from "../screens/profileScreen/Market";
 
 import ClansScreen from "../screens/profileScreen/Clans";
-import SupportScreen from "../screens/profileScreen/Support";
 import PlayerProfileScreen from "../screens/PlayerProfile";
-
-
-
 import SupportScreen from "../screens/profileScreen/Support";
-import PlayerProfileScreen from "../screens/PlayerProfile";
 import { BattalionScreen } from "../screens/profileScreen/BattalionScreen";
 
 
@@ -45,10 +40,7 @@ export type RootStackParamList = {
   Achievements: undefined;
   Connection: undefined;
   Market: undefined;
-
   Clans: undefined;
-
-  BattalionScreen: undefined;
 
   BattalionScreen: undefined;
   PlayerProfileScreen: undefined;
@@ -64,11 +56,7 @@ const CustomHeader = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   return (
-
     <View style={{ flexDirection:"row", alignSelf:"stretch", alignItems: "center", justifyContent: "space-between", width:340}}>
-
-    <View style={{ flexDirection:"row", alignSelf:"stretch", alignItems: "center", justifyContent: "space-between", width:340}}>
-
       <View>
         <Image source={require("../../assets/frontlinefury.png")} style={{ width: 120, height: 30, resizeMode: "contain" }} />
       </View>
@@ -136,13 +124,8 @@ const MainNavigator = () => {
       <Stack.Screen name="Achievements" component={AchievementsScreen} />
       <Stack.Screen name="Connection" component={ConnectionScreen} />
       <Stack.Screen name="Market" component={MarketScreen} />
-
       <Stack.Screen name="Clans" component={ClansScreen} />
-
       <Stack.Screen name="BattalionScreen" component={BattalionScreen} />
-
-      <Stack.Screen name="BattalionScreen" component={BattalionScreen} />
-
       <Stack.Screen name="Support" component={SupportScreen} />
     </Stack.Navigator>
   );
