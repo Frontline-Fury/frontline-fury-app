@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigaitonBar/BottomTabNavigation'; // Update path as needed
 import Achievement from '../../components/Achivement'; // Update path as needed
-
+import styles from '../../styles/Achivementstyle'; // Update path as needed
 type AchivementScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'GameStats'>;
 };
@@ -61,37 +61,6 @@ const AchivementScreen: React.FC<AchivementScreenProps> = ({ navigation}) => {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f3f4f6',
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#111827',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    backgroundColor: '#1E2329',
-  },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  scrollContainer: {
-    paddingBottom: 16,
-  },
-});
+
 
 export default AchivementScreen;

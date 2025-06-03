@@ -3,7 +3,7 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react
 import { MaterialIcons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigaitonBar/BottomTabNavigation"; // Update import path to match your file structure
-
+import styles from "../styles/Profile"; // Update import path to match your file structure
 // Define menu items with screen navigation targets
 const menuItems = [
   { title: "Game Stats", icon: "history", screen: "GameStats" },
@@ -73,58 +73,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1E2329',
-    padding: 20,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 20,
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 5,
-  },
-  viewProfile: {
-    fontSize: 16,
-    color: '#E0E0E0',
-  },
-  menuItemsContainer: {
-    paddingVertical: 10,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#3A7CA5',
-  },
-  icon: {
-    marginRight: 15,
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: '#E0E0E0',
-  },
-  card: {
-    backgroundColor: '#282E34',
-    borderRadius: 12,
-    padding: 16,
-  },
-});
+
 
 export default ProfileScreen;
